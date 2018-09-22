@@ -32,7 +32,8 @@ public:
 
 	void PutChar(int, int, char);
 	void PutStr(int, int, char*);
-
+	
+	unsigned char* GetBytePtr(int x, int y) { return (unsigned char*)(&buffer[x + (y << 6) + (y << 8)]); }
 	int* GetBuffer() { return buffer; }
 };
 
