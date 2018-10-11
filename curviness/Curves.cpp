@@ -48,3 +48,18 @@ float algorithms::generalized_bezier(float t, const std::vector<float>& data)
 {
 	return generalized_bezier(t, data.data(), data.size());
 }
+
+size_t curve::find_segment(int time) const
+{
+	size_t begin = 0, end = separators.size()-1;
+	while (begin < end) {
+		size_t middle = (begin + end) / 2;
+		if (time < separators[middle]) {
+			end = middle;
+		}
+		else {
+			begin = middle;
+		}
+	}
+	return begin;
+}
