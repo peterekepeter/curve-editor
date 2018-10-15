@@ -1,13 +1,9 @@
 #include "stdafx.h"
-#include "CppUnitTest.h"
-
 #include "../curviness/Curves.h"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-
-namespace unittest
+namespace curviness_test
 {
-	constexpr auto lerp = algorithms::linear_interpolation;
+	constexpr auto lerp = algorithms::basic::linear_interpolation;
 
 	TEST_CLASS(Algorithms)
 	{
@@ -15,7 +11,6 @@ namespace unittest
 		
 		TEST_METHOD(LinearInterpolationBasicTest)
 		{
-			// TODO: Your test code here
 			Assert::AreEqual(0.5f, lerp(.5f, 0.0f, 1.0f), 0.0001f);
 		}
 

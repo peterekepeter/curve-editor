@@ -2,20 +2,23 @@
 
 namespace algorithms
 {
-	float linear_interpolation(float t, float a, float b);
+	namespace basic
+	{
+		float linear_interpolation(float t, float a, float b);
 
-	float quadratic_bezier(float t, float a, float b, float c);
+		float quadratic_bezier(float t, float a, float b, float c);
 
-	float cubic_bezier(float t, float a, float b, float c, float d);
+		float cubic_bezier(float t, float a, float b, float c, float d);
 
-	float generalized_bezier(float t, const float* points, size_t count);
+		float generalized_bezier(float t, const float* points, size_t count);
+	}
 
 	float generalized_bezier(float t, const std::vector<float>& data);
 }
 
 struct segment
 {
-	std::function<float(std::vector<float>)> algorithm;
+	std::function<float(float, const std::vector<float>&)> algorithm;
 	std::vector<float> params;
 };
 

@@ -11,5 +11,6 @@
 #include <functional>
 // Headers for CppUnitTest
 #include "CppUnitTest.h"
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 // TODO: reference additional headers your program requires here

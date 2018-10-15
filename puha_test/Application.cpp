@@ -75,7 +75,7 @@ bool Application::DoWork()
 		for (int sub = 0; sub < sub_max; sub++) {
 			float t = i * sub_max + sub;
 			t /= segmentLength * sub_max;
-			float v = algorithms::generalized_bezier(t, segmentData, segmentDataCount);
+			float v = algorithms::basic::generalized_bezier(t, segmentData, segmentDataCount);
 			int ypos = y + v * y_size;
 			if (ypos > 0 && ypos < 200) {
 				auto p = gfx.GetBytePtr(xpos, ypos);
