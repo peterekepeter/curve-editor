@@ -18,8 +18,11 @@ namespace algorithms
 
 struct segment
 {
-	std::function<float(float, const std::vector<float>&)> algorithm;
+	float(*algorithm)(float, const std::vector<float>&);
 	std::vector<float> params;
+	float eval() const;
+	float eval(float normalized_time) const;
+	float eval(int min, int time, int max) const;
 };
 
 
@@ -40,14 +43,17 @@ struct curve
 	};
 
 	index_t split(int time);
-	index_t find_segment(int time) const;
+	segment& find_segment(int time);
+	index_t find_segment_index(int time) const;
 	index_t find_separator(int time) const;
 	void remove_split(index_t index);
 	segment& get_segment(index_t index);
+
 	const segment& get_segment(index_t index) const;
+	float eval(int time)const;
 
 private:
 
-	segment_list segments;
-	separator_list separators;
+	segment_list segments = { { algorithms::generalized_bezier, { .0f } } };
+	separator_list separators = { };
 };

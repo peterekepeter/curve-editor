@@ -63,7 +63,7 @@ curve::index_t curve::split(int time)
 	}
 
 	// add new separator
-	index_t segment_index = this->find_segment(time);
+	index_t segment_index = this->find_segment_index(time);
 	index_t insert_index = 0;
 	bool did_insert = false;
 	for (auto pos = this->separators.begin(); pos != this->separators.end(); pos++) {
@@ -86,7 +86,7 @@ curve::index_t curve::split(int time)
 	return insert_index;
 }
 
-size_t curve::find_segment(int time) const
+size_t curve::find_segment_index(int time) const
 {
 	size_t begin = 0, end = separators.size();
 	while (begin < end) {
@@ -101,7 +101,45 @@ size_t curve::find_segment(int time) const
 	return begin;
 }
 
+segment& curve::find_segment(int time) {
+	return get_segment(find_segment_index(time));
+}
+
 segment& curve::get_segment(curve::index_t index)
 {
 	return this->segments[index];
+}
+
+const segment& curve::get_segment(curve::index_t index) const
+{
+	return this->segments[index];
+}
+
+float segment::eval() const
+{
+	return this->algorithm(.5f, this->params);
+}
+
+float segment::eval(float normalized_time) const {
+	return this->algorithm(normalized_time, this->params);
+}
+
+float segment::eval(int min, int time, int max) const
+{
+	return this->algorithm((time - min) / float(max - min), this->params);
+}
+
+float curve::eval(int time) const {
+	auto index = find_segment_index(time);
+	auto sep_before_index = index - 1;
+	auto sep_after_index = index;
+	if (sep_before_index < 0) { sep_before_index = 0; }
+	auto last = segments.size() - 1;
+	if (sep_after_index >= last) { sep_after_index = last; }
+	if (sep_after_index <= sep_before_index) {
+		return get_segment(index).eval();
+	}
+	auto sep_before = separators[sep_before_index];
+	auto sep_after = separators[sep_after_index];
+	return get_segment(index).eval(sep_before, time, sep_after);
 }
