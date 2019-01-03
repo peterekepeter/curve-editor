@@ -40,6 +40,16 @@ int segmentDataCount = 4;
 int segmentDataAdd = 0;
 int nearest = 0;
 
+static void init_curve(curve& c) {
+	c.split(10);
+	c.split(100);
+	c.split(200);
+	c.split(400);
+}
+
+curve the_curve;
+
+
 bool Application::DoWork()
 {
 	if (segmentDataAdd != 0) {
@@ -55,10 +65,7 @@ bool Application::DoWork()
 	//gfx.HLine(0, mouse_y, 319, mouse_y);
 	//gfx.VLine(mouse_x, 0, mouse_x, 199);
 
-	// input data
-	int segmentBegin = 50;
-	int segmentEnd = 250;
-
+	const int screenWidth = 320;
 	// rendering props
 	const int sub_max = 15;
 	const int add_val_r = 17;
@@ -67,15 +74,12 @@ bool Application::DoWork()
 	int y = 50;
 	int y_size = 100;
 	// render
-	int segmentLength = segmentEnd - segmentBegin;
 	gfx.SetColor(0xffffff);
 	float t = 0;
-	for (int i = 0; i < segmentLength; i++) {
-		int xpos = segmentBegin + i;
+	for (int i = 0; i < screenWidth; i++) {
+		int xpos = i;
 		for (int sub = 0; sub < sub_max; sub++) {
-			float t = i * sub_max + sub;
-			t /= segmentLength * sub_max;
-			float v = algorithms::basic::generalized_bezier(t, segmentData, segmentDataCount);
+			float v = the_curve.eval(xpos);
 			int ypos = y + v * y_size;
 			if (ypos > 0 && ypos < 200) {
 				auto p = gfx.GetBytePtr(xpos, ypos);
@@ -87,6 +91,12 @@ bool Application::DoWork()
 	}
 	gfx.SetColor(mouse_l ? 0x00ff00 : 0xff0000);
 	// gfx.PutPixel(mouse_x, mouse_y);
+
+	// input data
+	auto& segment = the_curve.find_segment(mouse_x);
+	int segmentBegin = 0;
+	int segmentEnd = 319;
+	int segmentLength = segmentEnd - segmentBegin;
 
 	// nearest control point
 	int last = segmentDataCount - 1;
@@ -111,7 +121,7 @@ bool Application::DoWork()
 
 	// some logic
 	if (mouse_l) {
-		segmentData[nearest] += (mouse_y - last_mouse_y) / (float)y_size;
+		segment.params[0] += (mouse_y - last_mouse_y) / (float)y_size;
 	}
 
 	{
@@ -147,7 +157,9 @@ Application::Application(Gfx320x200& gfx)
 	, app_thread(std::thread([this]{ ThreadMethod(); }))
 	, onredraw([]{})
 	, is_running(true)
-{}
+{
+	init_curve(the_curve);
+}
 
 Application::~Application()
 {
