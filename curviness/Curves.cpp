@@ -131,11 +131,13 @@ float segment::eval(int min, int time, int max) const
 
 float curve::eval(int time) const {
 	auto index = find_segment_index(time);
+	if (index <= 0) {
+		return get_segment(index).eval();
+	}
 	auto sep_before_index = index - 1;
 	auto sep_after_index = index;
-	if (sep_before_index < 0) { sep_before_index = 0; }
-	auto last = segments.size() - 1;
-	if (sep_after_index >= last) { sep_after_index = last; }
+	auto last = separators.size() - 1;
+	if (sep_after_index > last) { sep_after_index = last; }
 	if (sep_after_index <= sep_before_index) {
 		return get_segment(index).eval();
 	}

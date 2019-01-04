@@ -41,10 +41,13 @@ int segmentDataAdd = 0;
 int nearest = 0;
 
 static void init_curve(curve& c) {
-	c.split(10);
+	c.split(20);
 	c.split(100);
 	c.split(200);
-	c.split(400);
+	auto& seg1 = c.find_segment(21);
+	seg1.params.resize(2);
+	auto& seg2 = c.find_segment(101);
+	seg2.params.resize(4);
 }
 
 curve the_curve;

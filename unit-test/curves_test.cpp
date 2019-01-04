@@ -56,6 +56,19 @@ namespace curviness_test
 			Assert::AreEqual(0.0f, curve().eval(14));
 		}
 
+		TEST_METHOD(CanEvaluateCurveBeyondLastSplitPosition) {
+			curve curve;
+			curve.split(40);
+			curve.eval(45);
+		}
+
+		TEST_METHOD(CanEvaluateCurveBeforeFirstSplitPosition) {
+			curve curve;
+			curve.split(44);
+			curve.split(-5);
+			curve.eval(-10);
+		}
+
 		TEST_METHOD(CanEvaluateCurveWithSomeValues) {
 			curve curve;
 			curve.split(10);
