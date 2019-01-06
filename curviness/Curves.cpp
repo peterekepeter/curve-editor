@@ -102,17 +102,44 @@ size_t curve::find_segment_index(int time) const
 }
 
 segment& curve::find_segment(int time) {
-	return get_segment(find_segment_index(time));
+	return get_segment_by_index(find_segment_index(time));
 }
 
-segment& curve::get_segment(curve::index_t index)
+segment& curve::get_segment_by_index(curve::index_t index)
 {
 	return this->segments[index];
 }
 
-const segment& curve::get_segment(curve::index_t index) const
+const segment& curve::get_segment_by_index(curve::index_t index) const
 {
 	return this->segments[index];
+}
+
+segment_with_separators curve::get_segment(int time)
+{
+	auto index = find_segment_index(time);
+	if (index <= 0) {
+		auto& segment = get_segment_by_index(index);
+		return segment_with_separators{ 0, 0, segment };
+	}
+	auto sep_before_index = index - 1;
+	auto sep_after_index = index;
+	auto last = separators.size() - 1;
+	if (sep_after_index > last) { sep_after_index = last; }
+	if (sep_after_index <= sep_before_index) {
+		auto sep = separators[sep_after_index];
+		auto& segment = get_segment_by_index(index);
+		return segment_with_separators{ sep, sep, segment };
+	}
+	auto sep_before = separators[sep_before_index];
+	auto sep_after = separators[sep_after_index];
+	auto& segment = get_segment_by_index(index);
+	return segment_with_separators { sep_before, sep_after, segment };
+}
+
+float curve::eval(int time)
+{
+	return this->get_segment(time).eval(time);
 }
 
 float segment::eval() const
@@ -129,19 +156,10 @@ float segment::eval(int min, int time, int max) const
 	return this->algorithm((time - min) / float(max - min), this->params);
 }
 
-float curve::eval(int time) const {
-	auto index = find_segment_index(time);
-	if (index <= 0) {
-		return get_segment(index).eval();
+float segment_with_separators::eval(int time)
+{
+	if (this->left >= this->right) {
+		return this->segment.eval();
 	}
-	auto sep_before_index = index - 1;
-	auto sep_after_index = index;
-	auto last = separators.size() - 1;
-	if (sep_after_index > last) { sep_after_index = last; }
-	if (sep_after_index <= sep_before_index) {
-		return get_segment(index).eval();
-	}
-	auto sep_before = separators[sep_before_index];
-	auto sep_after = separators[sep_after_index];
-	return get_segment(index).eval(sep_before, time, sep_after);
+	return this->segment.eval(this->left, time, this->right);
 }

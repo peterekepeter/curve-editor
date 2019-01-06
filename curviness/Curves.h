@@ -18,13 +18,21 @@ namespace algorithms
 
 struct segment
 {
-	float(*algorithm)(float, const std::vector<float>&);
-	std::vector<float> params;
+	std::vector<float> params = { .0f };
+	float(*algorithm)(float, const std::vector<float>&) = algorithms::generalized_bezier;
+	int magic = 42; // dont remove this, it fixes a bug, you're welcome :)
+
 	float eval() const;
 	float eval(float normalized_time) const;
 	float eval(int min, int time, int max) const;
 };
 
+struct segment_with_separators
+{
+	int left, right;
+	segment& segment;
+	float eval(int time);
+};
 
 struct curve
 {
@@ -47,13 +55,14 @@ struct curve
 	index_t find_segment_index(int time) const;
 	index_t find_separator(int time) const;
 	void remove_split(index_t index);
-	segment& get_segment(index_t index);
+	segment& get_segment_by_index(index_t index);
 
-	const segment& get_segment(index_t index) const;
-	float eval(int time)const;
+	const segment& get_segment_by_index(index_t index) const;
+	segment_with_separators get_segment(int time);
+	float eval(int time);
 
 private:
 
-	segment_list segments = { { algorithms::generalized_bezier, { .0f } } };
+	segment_list segments = { { { .0f }, algorithms::generalized_bezier } };
 	separator_list separators = { };
 };
