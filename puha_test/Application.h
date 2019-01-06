@@ -1,3 +1,4 @@
+#include "../curviness/Curves.h"
 #pragma once
 class Application
 {
@@ -12,6 +13,9 @@ class Application
 	bool mouse_l = false;
 	int mouse_x = 0, mouse_y = 0;
 	int last_mouse_x = 0, last_mouse_y = 0;
+
+	curve the_curve;
+	int segmentDataAdd = 0;
 
 	// should be last
 	std::thread app_thread;

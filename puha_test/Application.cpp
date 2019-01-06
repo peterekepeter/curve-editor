@@ -35,11 +35,6 @@ unsigned char blendf(unsigned char dst, unsigned char src) {
 	return dst;
 }
 
-float segmentData[] = { 0.0, 0.0, 1.0, 1.0, 0.5, 0.6, 0.9, -0.2, 1.3, 1.0, 0.0, 0.4, 0.6, 0.6, 0.7, 0.1 };
-int segmentDataCount = 4;
-int segmentDataAdd = 0;
-int nearest = 0;
-
 static void init_curve(curve& c) {
 	c.split(20);
 	c.split(100);
@@ -50,17 +45,61 @@ static void init_curve(curve& c) {
 	seg2.params.resize(4);
 }
 
-curve the_curve;
-
-
 bool Application::DoWork()
 {
+	// Update Logic /////////////////////////
+
+	// view stuff
+	int y = 50;
+	int y_size = 100;
+
+	// input segment_mouseover
+	auto segment_mouseover = the_curve.get_segment(mouse_x);
+	size_t segment_param_count = segment_mouseover.segment.params.size();
+
 	if (segmentDataAdd != 0) {
-		segmentDataCount += segmentDataAdd;
+		segment_param_count += segmentDataAdd;
 		segmentDataAdd = 0;
-		if (segmentDataCount > 8)segmentDataCount = 8;
-		if (segmentDataCount < 1)segmentDataCount = 1;
+		if (segment_param_count > 8)segment_param_count = 8;
+		if (segment_param_count < 1)segment_param_count = 1;
+		segment_mouseover.segment.params.resize(segment_param_count);
 	}
+
+	int segmentBegin = segment_mouseover.left;
+	int segmentEnd = segment_mouseover.right;
+	int segmentLength = segmentEnd - segmentBegin;
+	
+	// nearest control point
+	int last = segment_param_count - 1;
+	int nearest;
+	if (segment_param_count == 1)
+	{
+		nearest = 0;
+	}
+	else
+		if (mouse_x < segmentBegin) {
+			nearest = 0;
+		}
+		else if (mouse_x > segmentEnd) {
+			nearest = last;
+		}
+		else
+		{
+			nearest = (mouse_x - segmentBegin + (segmentLength / last / 2)) * last / segmentLength;
+			if (nearest > last) nearest = last;
+		}
+
+	// some logic
+	if (mouse_l) {
+		segment_mouseover.segment.params[nearest] += (mouse_y - last_mouse_y) / (float)y_size;
+	}
+
+	// consume state
+	last_mouse_x = mouse_x;
+	last_mouse_y = mouse_y;
+
+
+	// Redraw ///////////////////////////////
 
 	gfx.SetColor(0);
 	gfx.RectangleFilled(0, 0, 319, 199);
@@ -74,8 +113,6 @@ bool Application::DoWork()
 	const int add_val_r = 17;
 	const int add_val_g = 17;
 	const int add_val_b = 17;
-	int y = 50;
-	int y_size = 100;
 	// render
 	gfx.SetColor(0xffffff);
 	float t = 0;
@@ -83,7 +120,7 @@ bool Application::DoWork()
 		int xpos = i;
 		for (int sub = 0; sub < sub_max; sub++) {
 			float v = the_curve.eval(xpos);
-			int ypos = y + v * y_size;
+			int ypos = y + int(v * y_size);
 			if (ypos > 0 && ypos < 200) {
 				auto p = gfx.GetBytePtr(xpos, ypos);
 				p[0] = blendf(p[0], add_val_r);
@@ -95,38 +132,9 @@ bool Application::DoWork()
 	gfx.SetColor(mouse_l ? 0x00ff00 : 0xff0000);
 	// gfx.PutPixel(mouse_x, mouse_y);
 
-	// input data
-	auto& segment = the_curve.find_segment(mouse_x);
-	int segmentBegin = 0;
-	int segmentEnd = 319;
-	int segmentLength = segmentEnd - segmentBegin;
 
-	// nearest control point
-	int last = segmentDataCount - 1;
-	if (!mouse_l) 
-	{
-		if (segmentDataCount == 1)
-		{
-			nearest = 0;
-		} else 
-		if (mouse_x < segmentBegin) {
-			nearest = 0;
-		}
-		else if (mouse_x > segmentEnd) {
-			nearest = last;
-		}
-		else
-		{
-			nearest = (mouse_x - segmentBegin + (segmentLength / last / 2)) * last / segmentLength;
-			if (nearest > last) nearest = last;
-		}
-	}
-
-	// some logic
-	if (mouse_l) {
-		segment.params[0] += (mouse_y - last_mouse_y) / (float)y_size;
-	}
-
+	// redraw controls
+	if (segment_mouseover.segment.params.size() > 0)
 	{
 		int nearest_x;
 		if (last == 0) {
@@ -135,17 +143,16 @@ bool Application::DoWork()
 		else {
 			nearest_x = segmentBegin + nearest * segmentLength / last;
 		}
-		float v = segmentData[nearest];
-		int nearest_y = y + v * y_size;
+		float v = segment_mouseover.segment.params[nearest];
+		int nearest_y = y + int(v * y_size);
 		if (nearest_y > 1 && nearest_y < 198) {
 			gfx.RectangleFilled(nearest_x - 1, nearest_y - 1, nearest_x + 1, nearest_y + 1);
 		}
 	}
 
-	// consume state
-	last_mouse_x = mouse_x;
-	last_mouse_y = mouse_y;
-
+	if (!gfx.AreBoundsValid()) {
+		throw "oh crap!";
+	}
 
 	onredraw();
 
