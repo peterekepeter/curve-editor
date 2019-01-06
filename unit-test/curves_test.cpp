@@ -30,7 +30,7 @@ namespace curviness_test
 			curve curve;
 			curve.split(10);
 			curve.split(20);
-			auto& segment = curve.get_segment(curve.find_segment_index(15));
+			auto& segment = curve.get_segment_by_index(curve.find_segment_index(15));
 		}
 
 		TEST_METHOD(CanGetSegmentByTime) {
@@ -42,7 +42,7 @@ namespace curviness_test
 		}
 
 		TEST_METHOD(CanEvaluateSegment) {
-			segment segment = { algorithms::generalized_bezier, { 1.0f, 2.0f } };
+			segment segment = {{ 1.0f, 2.0f }};
 			Assert::AreEqual(1.5f, segment.eval(0.5f));
 		}
 
