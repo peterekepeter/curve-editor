@@ -44,9 +44,9 @@ float algorithms::basic::generalized_bezier(float t, const float * points, size_
 
 }
 
-float algorithms::generalized_bezier(float t, const std::vector<float>& data)
+float algorithms::generalized_bezier(float t, const float * points, size_t count)
 {
-	return basic::generalized_bezier(t, data.data(), data.size());
+	return basic::generalized_bezier(t, points, count);
 }
 
 curve::index_t curve::split(int time)
@@ -144,16 +144,16 @@ float curve::eval(int time)
 
 float segment::eval() const
 {
-	return this->algorithm(.5f, this->params);
+	return this->eval(.5f);
 }
 
 float segment::eval(float normalized_time) const {
-	return this->algorithm(normalized_time, this->params);
+	return this->algorithm(normalized_time, this->params.data(), current_count);
 }
 
 float segment::eval(int min, int time, int max) const
 {
-	return this->algorithm((time - min) / float(max - min), this->params);
+	return this->eval((time - min) / float(max - min));
 }
 
 float segment_with_separators::eval(int time)

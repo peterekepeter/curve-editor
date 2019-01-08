@@ -74,7 +74,7 @@ namespace curviness_test
 			curve.split(10);
 			curve.split(20);
 			auto& segment = curve.find_segment(15);
-			segment.params = { 2.0f, 3.0f };
+			segment.set_params(2.0f, 3.0f);
 			Assert::AreEqual(2.5f, curve.eval(15));
 		}
 	};
