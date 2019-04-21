@@ -12,8 +12,23 @@ float linear_to_srgb(float linear) {
 	}
 }
 
+static void init_curve(curve& c) {
+	c.split(20);
+	c.split(100);
+	c.split(200);
+	auto& seg1 = c.find_segment(21);
+	seg1.params.resize(2);
+	seg1.params[0] += 1.0f;
+	auto& seg2 = c.find_segment(101);
+	seg2.params.resize(4);
+	seg2.params[1] += .5f;
+}
+
 void Application::ThreadMethod()
 {
+	// init code
+	init_curve(the_curve);
+	// main
 	std::unique_lock<std::mutex> lock(thread_mutex);
 	while (is_running) {
 		auto did_work = DoWork();
@@ -34,17 +49,16 @@ unsigned char blendf(unsigned char dst, unsigned char src) {
 	return dst;
 }
 
-static void init_curve(curve& c) {
-	c.split(20);
-	c.split(100);
-	c.split(200);
-	auto& seg1 = c.find_segment(21);
-	seg1.params.resize(2);
-	seg1.params[0] += 1.0f;
-	auto& seg2 = c.find_segment(101);
-	seg2.params.resize(4);
-	seg2.params[1] += .5f;
-}
+struct rect
+{
+	int left, right, top, bottom;
+	bool is_inside(int x, int y) { return 
+		left < x && x < right && 
+		top < y && y < bottom; 
+	}
+	int get_width() { return right - left; }
+	int get_height() { return bottom - top; }
+};
 
 bool Application::DoWork()
 {
@@ -118,7 +132,29 @@ bool Application::DoWork()
 	//gfx.HLine(0, mouse_y, 319, mouse_y);
 	//gfx.VLine(mouse_x, 0, mouse_x, 199);
 
+
 	const int screenWidth = 320;
+	const int screenHeight = 200;
+
+	// draw segment frame
+	{
+		auto& segment = segment_mouseover;
+		gfx.SetColor(0x202020);
+		int columns[] = { segment.left, segment.right };
+		for (int& column : columns) {
+
+			column -= view_x_from;
+			if (column >= 0 && column <= screenWidth)
+			{
+				gfx.Line(column, 0, column, screenHeight-1);
+			}
+		}
+		auto& params = segment.segment.params;
+		for (float& param : params) {
+			
+		}
+	}
+
 	// rendering props
 	const int sub_max = 15;
 	const int add_val_r = 17;
@@ -196,7 +232,7 @@ Application::Application(Gfx320x200& gfx)
 	, onredraw([]{})
 	, is_running(true)
 {
-	init_curve(the_curve);
+	// dont init here, it will cause race condition, do all init in ThreadMethod
 }
 
 Application::~Application()
