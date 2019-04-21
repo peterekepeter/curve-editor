@@ -29,7 +29,7 @@
     <ProjectGuid>{E645429E-0B78-4684-941F-B2121333E84D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>curviness</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

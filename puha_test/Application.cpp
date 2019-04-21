@@ -3,7 +3,6 @@
 #include "Application.h"
 #include "../curviness/Curves.h"
 
-
 float linear_to_srgb(float linear) {
 	if (linear < 0.0031308f) {
 		return linear * 12.92f;
@@ -41,8 +40,10 @@ static void init_curve(curve& c) {
 	c.split(200);
 	auto& seg1 = c.find_segment(21);
 	seg1.params.resize(2);
+	seg1.params[0] += 1.0f;
 	auto& seg2 = c.find_segment(101);
 	seg2.params.resize(4);
+	seg2.params[1] += .5f;
 }
 
 bool Application::DoWork()
@@ -54,7 +55,7 @@ bool Application::DoWork()
 	int y_size = 100;
 
 	// input segment_mouseover
-	auto segment_mouseover = the_curve.get_segment(mouse_x);
+	auto segment_mouseover = the_curve.get_segment(mouse_x + view_x_from);
 	size_t segment_param_count = segment_mouseover.segment.params.size();
 
 	if (segmentDataAdd != 0) {
@@ -72,26 +73,35 @@ bool Application::DoWork()
 	// nearest control point
 	int last = segment_param_count - 1;
 	int nearest;
+	int position_x = mouse_x + view_x_from;
 	if (segment_param_count == 1)
 	{
 		nearest = 0;
 	}
 	else
-		if (mouse_x < segmentBegin) {
+		if (position_x < segmentBegin) {
 			nearest = 0;
 		}
-		else if (mouse_x > segmentEnd) {
+		else if (position_x > segmentEnd) {
 			nearest = last;
 		}
-		else
-		{
-			nearest = (mouse_x - segmentBegin + (segmentLength / last / 2)) * last / segmentLength;
+		else {
+			nearest = (position_x - segmentBegin + (segmentLength / last / 2)) * last / segmentLength;
 			if (nearest > last) nearest = last;
 		}
 
 	// some logic
-	if (mouse_l) {
-		segment_mouseover.segment.params[nearest] += (mouse_y - last_mouse_y) / (float)y_size;
+	if (edit_mode) {
+		if (mouse_l) {
+			segment_mouseover.segment.params[nearest] += (mouse_y - last_mouse_y) / (float)y_size;
+		}
+	}
+	else {
+		if (mouse_l) {
+			auto shift = mouse_x - last_mouse_x;
+			view_x_from -= shift;
+			view_x_to -= shift;
+		}
 	}
 
 	// consume state
@@ -104,6 +114,7 @@ bool Application::DoWork()
 	gfx.SetColor(0);
 	gfx.RectangleFilled(0, 0, 319, 199);
 	gfx.SetColor(0x222222);
+	
 	//gfx.HLine(0, mouse_y, 319, mouse_y);
 	//gfx.VLine(mouse_x, 0, mouse_x, 199);
 
@@ -115,21 +126,31 @@ bool Application::DoWork()
 	const int add_val_b = 17;
 	// render
 	gfx.SetColor(0xffffff);
+	
+	int view_x_length = view_x_to - view_x_from;
+
 	float t = 0;
 	for (int i = 0; i < screenWidth; i++) {
-		int xpos = i;
+		int xpos = view_x_from + i;
 		for (int sub = 0; sub < sub_max; sub++) {
 			float v = the_curve.eval(xpos);
 			int ypos = y + int(v * y_size);
 			if (ypos > 0 && ypos < 200) {
-				auto p = gfx.GetBytePtr(xpos, ypos);
+				auto p = gfx.GetBytePtr(i, ypos);
 				p[0] = blendf(p[0], add_val_r);
 				p[1] = blendf(p[1], add_val_g);
 				p[2] = blendf(p[2], add_val_b);
 			}
 		}
 	}
-	gfx.SetColor(mouse_l ? 0x00ff00 : 0xff0000);
+	
+	if (edit_mode) {
+		gfx.SetColor(mouse_l ? 0x00ff00 : 0xff0000);
+	}
+	else
+	{
+		gfx.SetColor(0xffffff);
+	}
 	// gfx.PutPixel(mouse_x, mouse_y);
 
 
@@ -144,10 +165,17 @@ bool Application::DoWork()
 			nearest_x = segmentBegin + nearest * segmentLength / last;
 		}
 		float v = segment_mouseover.segment.params[nearest];
+		// adjust based on view
+		nearest_x -= view_x_from;
 		int nearest_y = y + int(v * y_size);
-		if (nearest_y > 1 && nearest_y < 198) {
+		if (nearest_x > 1 && nearest_x < 318 && nearest_y > 1 && nearest_y < 198) {
 			gfx.RectangleFilled(nearest_x - 1, nearest_y - 1, nearest_x + 1, nearest_y + 1);
 		}
+	}
+	
+	if (edit_mode) {
+		gfx.SetColor(0xff0000);
+		gfx.Rectangle(0, 0, 319, 199);
 	}
 
 	if (!gfx.AreBoundsValid()) {
@@ -175,6 +203,20 @@ Application::~Application()
 {
 	is_running = false;
 	app_thread.join();
+}
+
+void Application::ToggleEditMode()
+{
+	edit_mode = !edit_mode;
+	signal.notify_all();
+}
+
+void Application::ShiftView(int amount)
+{
+	if (amount == 0) return;
+	view_x_from += amount;
+	view_x_to += amount;
+	signal.notify_all();
 }
 
 void Application::UpdateLeftButton(bool pressed)

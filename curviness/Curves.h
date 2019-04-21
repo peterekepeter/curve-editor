@@ -23,26 +23,10 @@ struct segment
 	float eval(float normalized_time) const;
 	float eval(int min, int time, int max) const;
 
-	template<typename...T> void set_params(T...x)
-	{
-		params.clear();
-		current_count = 0;
-		set_params_impl(x);
-	}
-
-private:
-
-	template<typename...T> void set_params_impl(float first, T...rest)
-	{
-		params.push_back(first);
-		current_count = 0;
-		set_params_impl(rest);
-	}
 
 	std::vector<float> params = { .0f };
 	float(*algorithm)(float, const float* params, size_t count) = algorithms::generalized_bezier;
-	int magic = 42; // dont remove this, it fixes a bug, you're welcome :)
-	size_t current_count = params.size();
+
 };
 
 struct segment_with_separators
