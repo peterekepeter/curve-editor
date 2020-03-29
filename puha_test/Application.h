@@ -1,5 +1,5 @@
 #pragma once
-#include "../curviness/Curves.h"
+#include "../curviness/curviness.h"
 
 class Application
 {

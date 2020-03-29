@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "../puha-render/puha-render.h"
 #include "Application.h"
-#include "../curviness/Curves.h"
+#include "../curviness/curviness.h"
 
 float linear_to_srgb(float linear) {
 	if (linear < 0.0031308f) {
