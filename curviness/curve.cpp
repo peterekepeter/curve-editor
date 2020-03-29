@@ -1,6 +1,6 @@
 #include "curve.h"
 
-curve::index_t curve::split(int time)
+curve::index_t curve::split(time_t time)
 {
 	// before everything split does consitency check
 	if (this->separators.size() != this->segments.size() + 1)
@@ -37,7 +37,7 @@ curve::index_t curve::split(int time)
 	return insert_index;
 }
 
-size_t curve::find_segment_index(int time) const
+size_t curve::find_segment_index(time_t time) const
 {
 	size_t begin = 0, end = separators.size();
 	while (begin < end) {
@@ -52,7 +52,7 @@ size_t curve::find_segment_index(int time) const
 	return begin;
 }
 
-segment& curve::find_segment(int time) {
+segment& curve::find_segment(time_t time) {
 	return get_segment_by_index(find_segment_index(time));
 }
 
@@ -66,12 +66,12 @@ const segment& curve::get_segment_by_index(curve::index_t index) const
 	return this->segments[index];
 }
 
-segment_with_separators curve::get_segment(int time)
+segment_with_separators<curve::time_t> curve::get_segment(curve::time_t time)
 {
 	auto index = find_segment_index(time);
 	if (index <= 0) {
 		auto& segment = get_segment_by_index(index);
-		return segment_with_separators{ 0, 0, segment };
+		return segment_with_separators<time_t>{ 0, 0, segment };
 	}
 	auto sep_before_index = index - 1;
 	auto sep_after_index = index;
@@ -80,15 +80,15 @@ segment_with_separators curve::get_segment(int time)
 	if (sep_after_index <= sep_before_index) {
 		auto sep = separators[sep_after_index];
 		auto& segment = get_segment_by_index(index);
-		return segment_with_separators{ sep, sep, segment };
+		return segment_with_separators<time_t>{ sep, sep, segment };
 	}
 	auto sep_before = separators[sep_before_index];
 	auto sep_after = separators[sep_after_index];
 	auto& segment = get_segment_by_index(index);
-	return segment_with_separators{ sep_before, sep_after, segment };
+	return segment_with_separators<time_t>{ sep_before, sep_after, segment };
 }
 
-float curve::eval(int time)
+float curve::eval(time_t time)
 {
 	return this->get_segment(time).eval(time);
 }

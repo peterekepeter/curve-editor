@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../curviness/Curves.h"
+#include "../curviness/curviness.h"
 
 namespace curviness_test
 {

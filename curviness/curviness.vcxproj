@@ -28,7 +28,6 @@
   <ItemGroup>
     <ClCompile Include="algorithms.cpp" />
     <ClCompile Include="curve.cpp" />
-    <ClCompile Include="segment_with_separators.cpp" />
     <ClCompile Include="segment.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
