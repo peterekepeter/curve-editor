@@ -1,5 +1,13 @@
 #pragma once
 #include "../curviness/curviness.h"
+#include "./curve_editor.h";
+
+struct app_rendering_state
+{
+	segment_with_separators<double> segment_mouseover;
+	int last, segmentBegin, segmentLength;
+	int nearest;
+};
 
 class Application
 {
@@ -10,6 +18,7 @@ class Application
 	std::condition_variable signal;
 	void ThreadMethod();
 	bool DoWork();
+	void DoRenderingWork(const app_rendering_state&);
 
 	bool mouse_l = false;
 	bool edit_mode = false;
@@ -18,9 +27,11 @@ class Application
 	int last_mouse_x = 0, last_mouse_y = 0;
 
 	int view_x_from = 0, view_x_to = 320;
-	float view_y_from = .0f, view_y_to = 1.0f;
+	float view_y_from = 0.0f, view_y_to = 1.0f;
 
 	curve the_curve;
+	curve_editor the_curve_editor;
+	
 	int segmentDataAdd = 0;
 
 	// should be last
@@ -34,7 +45,7 @@ public:
 	void ShiftView(int amount);
 	void UpdateLeftButton(bool pressed);
 	void UpdateMousePos(int x, int y);
-	void OnRedraw(std::function<void()> handler);
+	void SetRedrawHandler(std::function<void()> handler);
 	void IncreasePoints();
 	void DecreasePoints();
 };

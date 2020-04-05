@@ -11,16 +11,6 @@ struct curve
 	using segment_list = std::vector<segment>;
 	using separator_list = std::vector<time_t>;
 
-	struct segment_id
-	{
-		size_t index;
-	};
-
-	struct split_id
-	{
-		size_t index;
-	};
-
 	index_t split(time_t time);
 
 	segment& find_segment(time_t time);

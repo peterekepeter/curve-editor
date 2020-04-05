@@ -28,6 +28,8 @@ void Application::ThreadMethod()
 {
 	// init code
 	init_curve(the_curve);
+	the_curve_editor.curve = &the_curve;
+	
 	// main
 	std::unique_lock<std::mutex> lock(thread_mutex);
 	while (is_running) {
@@ -62,11 +64,11 @@ struct rect
 
 bool Application::DoWork()
 {
-	// Update Logic /////////////////////////
-
 	// view stuff
-	int y = 50;
-	int y_size = 100;
+	int y = view_y_from;
+	int y_size = view_y_to - view_y_from;
+
+	// Update Logic /////////////////////////
 
 	// input segment_mouseover
 	auto segment_mouseover = the_curve.get_segment(mouse_x + view_x_from);
@@ -85,7 +87,7 @@ bool Application::DoWork()
 	int segmentLength = segmentEnd - segmentBegin;
 	
 	// nearest control point
-	int last = segment_param_count - 1;
+	int last_param_index = segment_param_count - 1;
 	int nearest;
 	int position_x = mouse_x + view_x_from;
 	if (segment_param_count == 1)
@@ -97,11 +99,11 @@ bool Application::DoWork()
 			nearest = 0;
 		}
 		else if (position_x > segmentEnd) {
-			nearest = last;
+			nearest = last_param_index;
 		}
 		else {
-			nearest = (position_x - segmentBegin + (segmentLength / last / 2)) * last / segmentLength;
-			if (nearest > last) nearest = last;
+			nearest = (position_x - segmentBegin + (segmentLength / last_param_index / 2)) * last_param_index / segmentLength;
+			if (nearest > last_param_index) nearest = last_param_index;
 		}
 
 	// some logic
@@ -112,9 +114,12 @@ bool Application::DoWork()
 	}
 	else {
 		if (mouse_l) {
-			auto shift = mouse_x - last_mouse_x;
-			view_x_from -= shift;
-			view_x_to -= shift;
+			auto shift_x = mouse_x - last_mouse_x;
+			view_x_from -= shift_x;
+			view_x_to -= shift_x;
+			auto shift_y = mouse_y - last_mouse_y;
+			view_y_from += shift_y;
+			view_y_to += shift_y;
 		}
 	}
 
@@ -122,13 +127,35 @@ bool Application::DoWork()
 	last_mouse_x = mouse_x;
 	last_mouse_y = mouse_y;
 
+	app_rendering_state state
+	{ 
+		segment_mouseover,
+		last_param_index, 
+		segmentBegin,
+		segmentLength,
+		nearest
+	};
+
+	this->DoRenderingWork(state);
+
+	if (segmentDataAdd != 0) {
+		return true;
+	}
+	return false;
+}
+
+void Application::DoRenderingWork(const app_rendering_state& state)
+{
+	// view stuff
+	int y = view_y_from;
+	int y_size = view_y_to - view_y_from;
 
 	// Redraw ///////////////////////////////
 
 	gfx.SetColor(0);
 	gfx.RectangleFilled(0, 0, 319, 199);
 	gfx.SetColor(0x222222);
-	
+
 	//gfx.HLine(0, mouse_y, 319, mouse_y);
 	//gfx.VLine(mouse_x, 0, mouse_x, 199);
 
@@ -138,20 +165,20 @@ bool Application::DoWork()
 
 	// draw segment frame
 	{
-		auto& segment = segment_mouseover;
+		auto& segment = state.segment_mouseover;
 		gfx.SetColor(0x202020);
 		int columns[] = { segment.left, segment.right };
 		for (int& column : columns) {
 
 			column -= view_x_from;
-			if (column >= 0 && column <= screenWidth)
+			if (0 <= column && column < screenWidth)
 			{
-				gfx.Line(column, 0, column, screenHeight-1);
+				gfx.Line(column, 0, column, screenHeight - 1);
 			}
 		}
 		auto& params = segment.segment.params;
 		for (float& param : params) {
-			
+
 		}
 	}
 
@@ -162,14 +189,14 @@ bool Application::DoWork()
 	const int add_val_b = 17;
 	// render
 	gfx.SetColor(0xffffff);
-	
+
 	int view_x_length = view_x_to - view_x_from;
 
 	float t = 0;
 	for (int i = 0; i < screenWidth; i++) {
 		int xpos = view_x_from + i;
 		for (int sub = 0; sub < sub_max; sub++) {
-			float v = the_curve.eval(xpos);
+			float v = the_curve.eval(xpos + sub / (double)sub_max);
 			int ypos = y + int(v * y_size);
 			if (ypos > 0 && ypos < 200) {
 				auto p = gfx.GetBytePtr(i, ypos);
@@ -179,7 +206,7 @@ bool Application::DoWork()
 			}
 		}
 	}
-	
+
 	if (edit_mode) {
 		gfx.SetColor(mouse_l ? 0x00ff00 : 0xff0000);
 	}
@@ -191,16 +218,16 @@ bool Application::DoWork()
 
 
 	// redraw controls
-	if (segment_mouseover.segment.params.size() > 0)
+	if (state.segment_mouseover.segment.params.size() > 0)
 	{
 		int nearest_x;
-		if (last == 0) {
-			nearest_x = segmentBegin + segmentLength / 2;
+		if (state.last == 0) {
+			nearest_x = state.segmentBegin + state.segmentLength / 2;
 		}
 		else {
-			nearest_x = segmentBegin + nearest * segmentLength / last;
+			nearest_x = state.segmentBegin + state.nearest * state.segmentLength / state.last;
 		}
-		float v = segment_mouseover.segment.params[nearest];
+		float v = state.segment_mouseover.segment.params[state.nearest];
 		// adjust based on view
 		nearest_x -= view_x_from;
 		int nearest_y = y + int(v * y_size);
@@ -208,7 +235,7 @@ bool Application::DoWork()
 			gfx.RectangleFilled(nearest_x - 1, nearest_y - 1, nearest_x + 1, nearest_y + 1);
 		}
 	}
-	
+
 	if (edit_mode) {
 		gfx.SetColor(0xff0000);
 		gfx.Rectangle(0, 0, 319, 199);
@@ -219,11 +246,6 @@ bool Application::DoWork()
 	}
 
 	onredraw();
-
-	if (segmentDataAdd != 0) {
-		return true;
-	}
-	return false;
 }
 
 Application::Application(Gfx320x200& gfx) 
@@ -272,7 +294,7 @@ void Application::UpdateMousePos(int x, int y)
 	}
 }
 
-void Application::OnRedraw(std::function<void()> handler)
+void Application::SetRedrawHandler(std::function<void()> handler)
 {
 	onredraw = handler;
 	onredraw();
