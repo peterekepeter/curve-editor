@@ -40,17 +40,6 @@ void Application::ThreadMethod()
 	}
 }
 
-unsigned char blendf_add(unsigned char dst, unsigned char src) {
-	return dst + src;
-}
-
-unsigned char blendf(unsigned char dst, unsigned char src) {
-	unsigned val = src;
-	val *= (255 - dst);
-	dst += val >> 8;
-	return dst;
-}
-
 struct rect
 {
 	int left, right, top, bottom;
@@ -146,6 +135,9 @@ bool Application::DoWork()
 
 void Application::DoRenderingWork(const app_rendering_state& state)
 {
+	const int screen_width = 320;
+	const int screen_height = 200;
+
 	// view stuff
 	int y = view_y_from;
 	int y_size = view_y_to - view_y_from;
@@ -159,10 +151,6 @@ void Application::DoRenderingWork(const app_rendering_state& state)
 	//gfx.HLine(0, mouse_y, 319, mouse_y);
 	//gfx.VLine(mouse_x, 0, mouse_x, 199);
 
-
-	const int screenWidth = 320;
-	const int screenHeight = 200;
-
 	// draw segment frame
 	{
 		auto& segment = state.segment_mouseover;
@@ -171,9 +159,9 @@ void Application::DoRenderingWork(const app_rendering_state& state)
 		for (int& column : columns) {
 
 			column -= view_x_from;
-			if (0 <= column && column < screenWidth)
+			if (0 <= column && column < screen_width)
 			{
-				gfx.Line(column, 0, column, screenHeight - 1);
+				gfx.Line(column, 0, column, screen_height - 1);
 			}
 		}
 		auto& params = segment.segment.params;
@@ -182,30 +170,16 @@ void Application::DoRenderingWork(const app_rendering_state& state)
 		}
 	}
 
-	// rendering props
-	const int sub_max = 15;
-	const int add_val_r = 17;
-	const int add_val_g = 17;
-	const int add_val_b = 17;
-	// render
-	gfx.SetColor(0xffffff);
-
-	int view_x_length = view_x_to - view_x_from;
-
-	float t = 0;
-	for (int i = 0; i < screenWidth; i++) {
-		int xpos = view_x_from + i;
-		for (int sub = 0; sub < sub_max; sub++) {
-			float v = the_curve.eval(xpos + sub / (double)sub_max);
-			int ypos = y + int(v * y_size);
-			if (ypos > 0 && ypos < 200) {
-				auto p = gfx.GetBytePtr(i, ypos);
-				p[0] = blendf(p[0], add_val_r);
-				p[1] = blendf(p[1], add_val_g);
-				p[2] = blendf(p[2], add_val_b);
-			}
+	the_curve_editor.render(gfx, 
+		curve_editor::rprops{
+			view_x_from,
+			view_x_to,
+			static_cast<int>(view_y_from),
+			static_cast<int>(view_y_to),
+			screen_width,
+			screen_height,
 		}
-	}
+	);
 
 	if (edit_mode) {
 		gfx.SetColor(mouse_l ? 0x00ff00 : 0xff0000);
