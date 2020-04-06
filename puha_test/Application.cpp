@@ -2,6 +2,7 @@
 #include "../puha-render/puha-render.h"
 #include "Application.h"
 #include "../curviness/curviness.h"
+#include "../editor-lib/editor_math.h"
 
 float linear_to_srgb(float linear) {
 	if (linear < 0.0031308f) {
@@ -12,22 +13,16 @@ float linear_to_srgb(float linear) {
 	}
 }
 
-static void init_curve(curve& c) {
-	c.split(20);
-	c.split(100);
-	c.split(200);
-	auto& seg1 = c.find_segment(21);
-	seg1.params.resize(2);
-	seg1.params[0] += 1.0f;
-	auto& seg2 = c.find_segment(101);
-	seg2.params.resize(4);
-	seg2.params[1] += .5f;
-}
+
+static void init_curve(curve& c);
 
 void Application::ThreadMethod()
 {
 	// init code
 	init_curve(the_curve);
+	curve_to_screen = transformation{ 50, -100, 160, 100 };
+	screen_to_curve = curve_to_screen.inverse();
+
 	the_curve_editor.curve = &the_curve;
 	
 	// main
@@ -39,6 +34,22 @@ void Application::ThreadMethod()
 		}
 	}
 }
+
+static void init_curve(curve& c) {
+	c.split(-.4f);
+	c.split(.7f);
+	c.split(1.9f);
+	auto& seg0 = c.find_segment(-.5f);
+	seg0.params.resize(1);
+	seg0.params[0] = -.5f;
+	auto& seg1 = c.find_segment(.5f);
+	seg1.params.resize(2);
+	seg1.params[0] = -.5f;
+	auto& seg2 = c.find_segment(.8f);
+	seg2.params.resize(5);
+	seg2.params[1] = +.5f;
+}
+
 
 struct rect
 {
@@ -53,14 +64,11 @@ struct rect
 
 bool Application::DoWork()
 {
-	// view stuff
-	int y = view_y_from;
-	int y_size = view_y_to - view_y_from;
-
 	// Update Logic /////////////////////////
 
 	// input segment_mouseover
-	auto segment_mouseover = the_curve.get_segment(mouse_x + view_x_from);
+	float mouse_curve_x = screen_to_curve.apply_x(mouse_x);
+	auto segment_mouseover = the_curve.get_segment(mouse_curve_x);
 	size_t segment_param_count = segment_mouseover.segment.params.size();
 
 	if (segmentDataAdd != 0) {
@@ -71,44 +79,49 @@ bool Application::DoWork()
 		segment_mouseover.segment.params.resize(segment_param_count);
 	}
 
-	int segmentBegin = segment_mouseover.left;
-	int segmentEnd = segment_mouseover.right;
-	int segmentLength = segmentEnd - segmentBegin;
+	auto segment_start_x = segment_mouseover.left;
+	auto segment_end_x = segment_mouseover.right;
+	auto segmentLength = segment_end_x - segment_start_x;
 	
 	// nearest control point
 	int last_param_index = segment_param_count - 1;
-	int nearest;
-	int position_x = mouse_x + view_x_from;
+	int nearest_param_index;
 	if (segment_param_count == 1)
 	{
-		nearest = 0;
+		nearest_param_index = 0;
 	}
 	else
-		if (position_x < segmentBegin) {
-			nearest = 0;
+		if (mouse_curve_x < segment_start_x) {
+			nearest_param_index = 0;
 		}
-		else if (position_x > segmentEnd) {
-			nearest = last_param_index;
+		else if (mouse_curve_x > segment_end_x) {
+			nearest_param_index = last_param_index;
 		}
 		else {
-			nearest = (position_x - segmentBegin + (segmentLength / last_param_index / 2)) * last_param_index / segmentLength;
-			if (nearest > last_param_index) nearest = last_param_index;
+			nearest_param_index = static_cast<int>((mouse_curve_x - segment_start_x 
+				+ (segmentLength / last_param_index / 2))
+				* last_param_index / segmentLength);
+			nearest_param_index = 
+				editor_math::clamp(nearest_param_index, 
+					0, last_param_index);
 		}
 
 	// some logic
+	auto delta_x = mouse_x - last_mouse_x;
+	auto delta_y = mouse_y - last_mouse_y;
 	if (edit_mode) {
 		if (mouse_l) {
-			segment_mouseover.segment.params[nearest] += (mouse_y - last_mouse_y) / (float)y_size;
+			segment_mouseover.segment.params[nearest_param_index] 
+				+= screen_to_curve.scale_y * delta_y;
 		}
 	}
 	else {
 		if (mouse_l) {
-			auto shift_x = mouse_x - last_mouse_x;
-			view_x_from -= shift_x;
-			view_x_to -= shift_x;
-			auto shift_y = mouse_y - last_mouse_y;
-			view_y_from += shift_y;
-			view_y_to += shift_y;
+			curve_to_screen.translate_x += 
+				delta_x;
+			curve_to_screen.translate_y +=
+				delta_y;
+			screen_to_curve = curve_to_screen.inverse();
 		}
 	}
 
@@ -120,9 +133,9 @@ bool Application::DoWork()
 	{ 
 		segment_mouseover,
 		last_param_index, 
-		segmentBegin,
+		segment_start_x,
 		segmentLength,
-		nearest
+		nearest_param_index
 	};
 
 	this->DoRenderingWork(state);
@@ -138,10 +151,6 @@ void Application::DoRenderingWork(const app_rendering_state& state)
 	const int screen_width = 320;
 	const int screen_height = 200;
 
-	// view stuff
-	int y = view_y_from;
-	int y_size = view_y_to - view_y_from;
-
 	// Redraw ///////////////////////////////
 
 	gfx.SetColor(0);
@@ -155,27 +164,20 @@ void Application::DoRenderingWork(const app_rendering_state& state)
 	{
 		auto& segment = state.segment_mouseover;
 		gfx.SetColor(0x202020);
-		int columns[] = { segment.left, segment.right };
-		for (int& column : columns) {
-
-			column -= view_x_from;
+		double columns[] = { segment.left, segment.right };
+		for (auto& column : columns) {
+			column = curve_to_screen.apply_x(column);
 			if (0 <= column && column < screen_width)
 			{
 				gfx.Line(column, 0, column, screen_height - 1);
 			}
 		}
-		auto& params = segment.segment.params;
-		for (float& param : params) {
-
-		}
 	}
 
 	the_curve_editor.render(gfx, 
 		curve_editor::rprops{
-			view_x_from,
-			view_x_to,
-			static_cast<int>(view_y_from),
-			static_cast<int>(view_y_to),
+			curve_to_screen,
+			screen_to_curve,
 			screen_width,
 			screen_height,
 		}
@@ -191,20 +193,20 @@ void Application::DoRenderingWork(const app_rendering_state& state)
 	// gfx.PutPixel(mouse_x, mouse_y);
 
 
-	// redraw controls
+	// redraw control points
 	if (state.segment_mouseover.segment.params.size() > 0)
 	{
-		int nearest_x;
+		double nearest_x_f;
 		if (state.last == 0) {
-			nearest_x = state.segmentBegin + state.segmentLength / 2;
+			nearest_x_f = state.segmentBegin + state.segmentLength / 2;
 		}
 		else {
-			nearest_x = state.segmentBegin + state.nearest * state.segmentLength / state.last;
+			nearest_x_f = state.segmentBegin + state.nearest * state.segmentLength / state.last;
 		}
 		float v = state.segment_mouseover.segment.params[state.nearest];
 		// adjust based on view
-		nearest_x -= view_x_from;
-		int nearest_y = y + int(v * y_size);
+		int nearest_x = static_cast<int>(curve_to_screen.apply_x(nearest_x_f));
+		int nearest_y = static_cast<int>(curve_to_screen.apply_y(v));
 		if (nearest_x > 1 && nearest_x < 318 && nearest_y > 1 && nearest_y < 198) {
 			gfx.RectangleFilled(nearest_x - 1, nearest_y - 1, nearest_x + 1, nearest_y + 1);
 		}
@@ -246,8 +248,31 @@ void Application::ToggleEditMode()
 void Application::ShiftView(int amount)
 {
 	if (amount == 0) return;
-	view_x_from += amount;
-	view_x_to += amount;
+	curve_to_screen.translate_x += amount * curve_to_screen.scale_x;
+	screen_to_curve = curve_to_screen.inverse();
+	signal.notify_all();
+}
+
+static void apply_zoom(transformation& t, 
+	float factor, int mouse_x, int mouse_y)
+{
+	t.scale_x *= factor;
+	t.scale_y *= factor;
+	t.translate_x = (t.translate_x - mouse_x)*factor + mouse_x;
+	t.translate_y = (t.translate_y - mouse_y)*factor + mouse_y;
+}
+
+void Application::ZoomIn()
+{
+	apply_zoom(curve_to_screen, 2.0f, mouse_x, mouse_y);
+	screen_to_curve = curve_to_screen.inverse();
+	signal.notify_all();
+}
+
+void Application::ZoomOut()
+{
+	apply_zoom(curve_to_screen, 0.5f, mouse_x, mouse_y);
+	screen_to_curve = curve_to_screen.inverse();
 	signal.notify_all();
 }
 

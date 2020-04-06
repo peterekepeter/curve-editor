@@ -8,12 +8,12 @@ struct transformation
 
 	static transformation identity();
 
-	transformation inverse();
+	transformation inverse() const;
 
-	float apply_x(float);
+	float apply_x(float) const;
 
-	float apply_y(float);
+	float apply_y(float) const;
 
-	point apply(point);
+	point apply(point) const;
 };
 

@@ -1,11 +1,13 @@
 #pragma once
 #include "../curviness/curviness.h"
-#include "./curve_editor.h";
+#include "./curve_editor.h"
+#include "../editor-lib/transformation.h"
 
 struct app_rendering_state
 {
 	segment_with_separators<double> segment_mouseover;
-	int last, segmentBegin, segmentLength;
+	int last;
+	double segmentBegin, segmentLength;
 	int nearest;
 };
 
@@ -26,8 +28,8 @@ class Application
 	int mouse_x = 0, mouse_y = 0;
 	int last_mouse_x = 0, last_mouse_y = 0;
 
-	int view_x_from = 0, view_x_to = 320;
-	float view_y_from = 0.0f, view_y_to = 1.0f;
+	transformation curve_to_screen;
+	transformation screen_to_curve;
 
 	curve the_curve;
 	curve_editor the_curve_editor;
@@ -48,4 +50,6 @@ public:
 	void SetRedrawHandler(std::function<void()> handler);
 	void IncreasePoints();
 	void DecreasePoints();
+	void ZoomIn();
+	void ZoomOut();
 };

@@ -69,18 +69,16 @@ const segment& curve::get_segment_by_index(curve::index_t index) const
 segment_with_separators<curve::time_t> curve::get_segment(curve::time_t time)
 {
 	auto index = find_segment_index(time);
-	if (index <= 0) {
-		auto& segment = get_segment_by_index(index);
-		return segment_with_separators<time_t>{ 0, 0, segment };
-	}
+	auto last = separators.size() - 1;
 	auto sep_before_index = index - 1;
 	auto sep_after_index = index;
-	auto last = separators.size() - 1;
-	if (sep_after_index > last) { sep_after_index = last; }
-	if (sep_after_index <= sep_before_index) {
-		auto sep = separators[sep_after_index];
-		auto& segment = get_segment_by_index(index);
-		return segment_with_separators<time_t>{ sep, sep, segment };
+	if (index <= 0)
+	{
+		sep_before_index = 0;
+	}
+	if (sep_after_index > last)
+	{
+		sep_after_index = last;
 	}
 	auto sep_before = separators[sep_before_index];
 	auto sep_after = separators[sep_after_index];
