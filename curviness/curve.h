@@ -24,6 +24,9 @@ struct curve
 	const segment& get_segment_by_index(index_t index) const;
 	float eval(time_t time);
 
+	time_t get_separator_value(index_t index) const;
+	void set_separator_value(index_t index, time_t value);
+
 private:
 
 	segment_list segments = { { { .0f }, algorithms::generalized_bezier } };

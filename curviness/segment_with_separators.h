@@ -6,6 +6,8 @@ struct segment_with_separators
 {
 	time_t left, right;
 	segment& segment;
+	size_t segment_index;
+
 	float eval(time_t time);
 };
 

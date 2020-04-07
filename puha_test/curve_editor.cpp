@@ -2,6 +2,7 @@
 #include "../editor-lib/editor_math.h"
 #include "./curve_editor.h"
 #include "./edit_control_y_param.h"
+#include "./edit_control_separator.h"
 
 static unsigned char blendf_add(unsigned char dst, unsigned char src);
 static unsigned char blendf(unsigned char dst, unsigned char src);
@@ -62,7 +63,12 @@ curve_editor::get_nearest_edit_control(float x, float y)
 {
 	auto nearest_segment = curve->get_segment(x);
 	auto param_index = get_nearest_param_index(nearest_segment, x);
-	auto param_distance = curve->eval(x);
+	auto param_distance = abs(curve->eval(x) - y);
+
+	auto left_distance = abs(float(x - nearest_segment.left));
+	auto right_distance = abs(float(nearest_segment.right - x));
+	auto best_distance = editor_math::min(
+		param_distance, left_distance, right_distance);
 
 	//if (segmentDataAdd != 0) {
 	//	segment_param_count += segmentDataAdd;
@@ -72,13 +78,44 @@ curve_editor::get_nearest_edit_control(float x, float y)
 	//	segment_mouseover.segment.params.resize(segment_param_count);
 	//}
 
-	//
-	return nearest_result
+	if (best_distance == param_distance) 
 	{
-		param_distance,
-		std::make_unique<edit_control_y_param>(
-			nearest_segment, param_index)
-	};
+		return nearest_result
+		{
+			param_distance,
+			std::make_unique<edit_control_y_param>(
+				nearest_segment, 
+				param_index)
+		};
+	}
+
+	if (best_distance == left_distance)
+	{
+		size_t separator_index = curve->find_separator(
+			nearest_segment.left);
+
+		return nearest_result
+		{
+			left_distance,
+			std::make_unique<edit_control_separator>(
+				*curve, separator_index)
+		};
+	}
+
+	if (best_distance == right_distance)
+	{
+		size_t separator_index = curve->find_separator(
+			nearest_segment.right);
+
+		return nearest_result
+		{
+			right_distance,
+			std::make_unique<edit_control_separator>(
+				*curve, separator_index)
+		};
+	}
+
+	throw "should never get here";
 }
 
 static int get_nearest_param_index(

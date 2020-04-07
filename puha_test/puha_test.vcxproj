@@ -150,6 +150,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="curve_editor.h" />
     <ClInclude Include="edit_control.h" />
+    <ClInclude Include="edit_control_separator.h" />
     <ClInclude Include="edit_control_y_param.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="curve_editor.cpp" />
     <ClCompile Include="edit_control.cpp" />
+    <ClCompile Include="edit_control_separator.cpp" />
     <ClCompile Include="edit_control_y_param.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp">

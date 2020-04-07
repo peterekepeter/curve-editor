@@ -64,14 +64,18 @@ struct rect
 
 bool Application::DoWork()
 {
+	bool mouse_l_pressed = mouse_l && !mouse_l_prev;
+	bool mouse_l_released = !mouse_l && mouse_l_prev;
 	// Update Logic /////////////////////////
 
 	// input segment_mouseover
 	float mouse_curve_x = screen_to_curve.apply_x(mouse_x);
 	float mouse_curve_y = screen_to_curve.apply_y(mouse_y);
 
-	target = the_curve_editor.get_nearest_edit_control(mouse_curve_x, mouse_curve_y);
-
+	if (mouse_l_pressed || !mouse_l) {
+		target = the_curve_editor.get_nearest_edit_control(mouse_curve_x, mouse_curve_y);
+	}
+	
 	// some logic
 	auto delta_x = mouse_x - last_mouse_x;
 	auto delta_y = mouse_y - last_mouse_y;
@@ -95,6 +99,7 @@ bool Application::DoWork()
 	// consume state
 	last_mouse_x = mouse_x;
 	last_mouse_y = mouse_y;
+	mouse_l_prev = mouse_l;
 
 	this->DoRenderingWork();
 

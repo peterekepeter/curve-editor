@@ -15,6 +15,7 @@ class Application
 	void DoRenderingWork();
 
 	bool mouse_l = false;
+	bool mouse_l_prev = false;
 	bool edit_mode = false;
 
 	int mouse_x = 0, mouse_y = 0;
@@ -26,6 +27,7 @@ class Application
 	curve the_curve;
 	curve_editor the_curve_editor;
 	curve_editor::nearest_result target;
+	curve_editor::nearest_result hover_target;
 	
 	int segmentDataAdd = 0;
 

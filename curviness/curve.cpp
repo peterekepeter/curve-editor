@@ -52,6 +52,39 @@ size_t curve::find_segment_index(time_t time) const
 	return begin;
 }
 
+curve::index_t curve::find_separator(time_t time) const
+{
+	size_t separator_count = separators.size();
+	if (separator_count == 0)
+	{
+		throw "has no separators";
+	}
+	if (separator_count == 1) 
+	{
+		return 0;
+	}
+	size_t segment_index = find_segment_index(time);
+	//  0   1   2
+	// ---|---|---
+	//    0   1
+	if (segment_index == 0) 
+	{
+		return segment_index;
+	}
+	if (segment_index == segments.size() - 1) 
+	{
+		return segment_index - 1;
+	}
+	if (time - separators[segment_index - 1] < separators[segment_index] - time)
+	{
+		return segment_index - 1;
+	}
+	else 
+	{
+		return segment_index;
+	}
+}
+
 segment& curve::find_segment(time_t time) {
 	return get_segment_by_index(find_segment_index(time));
 }
@@ -68,25 +101,61 @@ const segment& curve::get_segment_by_index(curve::index_t index) const
 
 segment_with_separators<curve::time_t> curve::get_segment(curve::time_t time)
 {
-	auto index = find_segment_index(time);
-	auto last = separators.size() - 1;
-	auto sep_before_index = index - 1;
-	auto sep_after_index = index;
-	if (index <= 0)
+	auto segment_index = find_segment_index(time);
+	auto separators_count = separators.size();
+
+	auto before_index = segment_index - 1;
+	auto after_index = segment_index;
+
+	time_t sep_before = -INFINITY;
+	if (0 <= before_index && before_index < separators_count)
 	{
-		sep_before_index = 0;
+		sep_before = separators[before_index];
 	}
-	if (sep_after_index > last)
-	{
-		sep_after_index = last;
+
+	time_t sep_after = +INFINITY;
+	if (0 <= after_index && after_index < separators_count)
+	{ 
+		sep_after = separators[after_index];
 	}
-	auto sep_before = separators[sep_before_index];
-	auto sep_after = separators[sep_after_index];
-	auto& segment = get_segment_by_index(index);
-	return segment_with_separators<time_t>{ sep_before, sep_after, segment };
+
+	auto& segment = get_segment_by_index(segment_index);
+	return segment_with_separators<time_t>
+	{ 
+		sep_before, 
+		sep_after, 
+		segment, 
+		segment_index
+	};
 }
 
 float curve::eval(time_t time)
 {
 	return this->get_segment(time).eval(time);
+}
+
+
+curve::time_t curve::get_separator_value(index_t index) const
+{
+	return separators[index];
+}
+
+void curve::set_separator_value(index_t index, time_t value)
+{
+	time_t min_val = -INFINITY;
+	time_t max_val = +INFINITY;
+	if (index > 0) {
+		min_val = separators[index - 1];
+	}
+	if (index + 1 < separators.size()) {
+		max_val = separators[index + 1];
+	}
+	// clamp
+	if (value < min_val) {
+		value = min_val;
+	}
+	if (value > max_val) {
+		value = max_val;
+	}
+	separators[index] = value;
 }

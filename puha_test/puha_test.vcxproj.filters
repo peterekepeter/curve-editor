@@ -33,6 +33,9 @@
     <ClInclude Include="edit_control_y_param.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="edit_control_separator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -51,6 +54,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="edit_control.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="edit_control_separator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
