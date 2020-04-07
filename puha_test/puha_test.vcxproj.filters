@@ -27,6 +27,12 @@
     <ClInclude Include="curve_editor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="edit_control.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="edit_control_y_param.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -39,6 +45,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="curve_editor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="edit_control_y_param.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="edit_control.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

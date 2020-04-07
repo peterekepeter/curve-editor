@@ -12,6 +12,9 @@ protected:
 
 public:
 
+	const int Width = 320;
+	const int Height = 200;
+
 	Gfx320x200();
 	~Gfx320x200();
 	Gfx320x200(const Gfx320x200&) = delete;

@@ -68,54 +68,21 @@ bool Application::DoWork()
 
 	// input segment_mouseover
 	float mouse_curve_x = screen_to_curve.apply_x(mouse_x);
-	auto segment_mouseover = the_curve.get_segment(mouse_curve_x);
-	size_t segment_param_count = segment_mouseover.segment.params.size();
+	float mouse_curve_y = screen_to_curve.apply_y(mouse_y);
 
-	if (segmentDataAdd != 0) {
-		segment_param_count += segmentDataAdd;
-		segmentDataAdd = 0;
-		if (segment_param_count > 8)segment_param_count = 8;
-		if (segment_param_count < 1)segment_param_count = 1;
-		segment_mouseover.segment.params.resize(segment_param_count);
-	}
-
-	auto segment_start_x = segment_mouseover.left;
-	auto segment_end_x = segment_mouseover.right;
-	auto segmentLength = segment_end_x - segment_start_x;
-	
-	// nearest control point
-	int last_param_index = segment_param_count - 1;
-	int nearest_param_index;
-	if (segment_param_count == 1)
-	{
-		nearest_param_index = 0;
-	}
-	else
-		if (mouse_curve_x < segment_start_x) {
-			nearest_param_index = 0;
-		}
-		else if (mouse_curve_x > segment_end_x) {
-			nearest_param_index = last_param_index;
-		}
-		else {
-			nearest_param_index = static_cast<int>((mouse_curve_x - segment_start_x 
-				+ (segmentLength / last_param_index / 2))
-				* last_param_index / segmentLength);
-			nearest_param_index = 
-				editor_math::clamp(nearest_param_index, 
-					0, last_param_index);
-		}
+	target = the_curve_editor.get_nearest_edit_control(mouse_curve_x, mouse_curve_y);
 
 	// some logic
 	auto delta_x = mouse_x - last_mouse_x;
 	auto delta_y = mouse_y - last_mouse_y;
+	bool did_move = (delta_x != 0 || delta_y != 0);
 	if (edit_mode) {
-		if (mouse_l) {
-			segment_mouseover.segment.params[nearest_param_index] 
-				+= screen_to_curve.scale_y * delta_y;
+		if (mouse_l && did_move) {
+			float dx = screen_to_curve.scale_x * delta_x;
+			float dy = screen_to_curve.scale_y * delta_y;
+			target.control->add_edit(dx, dy);
 		}
-	}
-	else {
+	} else {
 		if (mouse_l) {
 			curve_to_screen.translate_x += 
 				delta_x;
@@ -129,16 +96,7 @@ bool Application::DoWork()
 	last_mouse_x = mouse_x;
 	last_mouse_y = mouse_y;
 
-	app_rendering_state state
-	{ 
-		segment_mouseover,
-		last_param_index, 
-		segment_start_x,
-		segmentLength,
-		nearest_param_index
-	};
-
-	this->DoRenderingWork(state);
+	this->DoRenderingWork();
 
 	if (segmentDataAdd != 0) {
 		return true;
@@ -146,10 +104,10 @@ bool Application::DoWork()
 	return false;
 }
 
-void Application::DoRenderingWork(const app_rendering_state& state)
+void Application::DoRenderingWork()
 {
-	const int screen_width = 320;
-	const int screen_height = 200;
+	const int screen_width = gfx.Width;
+	const int screen_height = gfx.Height;
 
 	// Redraw ///////////////////////////////
 
@@ -157,31 +115,13 @@ void Application::DoRenderingWork(const app_rendering_state& state)
 	gfx.RectangleFilled(0, 0, 319, 199);
 	gfx.SetColor(0x222222);
 
-	//gfx.HLine(0, mouse_y, 319, mouse_y);
-	//gfx.VLine(mouse_x, 0, mouse_x, 199);
-
-	// draw segment frame
-	{
-		auto& segment = state.segment_mouseover;
-		gfx.SetColor(0x202020);
-		double columns[] = { segment.left, segment.right };
-		for (auto& column : columns) {
-			column = curve_to_screen.apply_x(column);
-			if (0 <= column && column < screen_width)
-			{
-				gfx.Line(column, 0, column, screen_height - 1);
-			}
-		}
-	}
-
 	the_curve_editor.render(gfx, 
 		curve_editor::rprops{
 			curve_to_screen,
-			screen_to_curve,
-			screen_width,
-			screen_height,
+			screen_to_curve
 		}
 	);
+
 
 	if (edit_mode) {
 		gfx.SetColor(mouse_l ? 0x00ff00 : 0xff0000);
@@ -190,26 +130,27 @@ void Application::DoRenderingWork(const app_rendering_state& state)
 	{
 		gfx.SetColor(0xffffff);
 	}
-	// gfx.PutPixel(mouse_x, mouse_y);
 
-
-	// redraw control points
-	if (state.segment_mouseover.segment.params.size() > 0)
-	{
-		double nearest_x_f;
-		if (state.last == 0) {
-			nearest_x_f = state.segmentBegin + state.segmentLength / 2;
+	bool is_hover = false, is_active = false;
+	if (edit_mode) {
+		if (mouse_l) {
+			is_active = true;
 		}
 		else {
-			nearest_x_f = state.segmentBegin + state.nearest * state.segmentLength / state.last;
+			is_hover = true;
 		}
-		float v = state.segment_mouseover.segment.params[state.nearest];
-		// adjust based on view
-		int nearest_x = static_cast<int>(curve_to_screen.apply_x(nearest_x_f));
-		int nearest_y = static_cast<int>(curve_to_screen.apply_y(v));
-		if (nearest_x > 1 && nearest_x < 318 && nearest_y > 1 && nearest_y < 198) {
-			gfx.RectangleFilled(nearest_x - 1, nearest_y - 1, nearest_x + 1, nearest_y + 1);
-		}
+	}
+
+	if (is_active || is_hover)
+	{
+		target.control->render(gfx, edit_control::rprops
+			{
+				curve_to_screen,
+				screen_to_curve,
+				is_hover,
+				is_active
+			}
+		);
 	}
 
 	if (edit_mode) {

@@ -3,14 +3,6 @@
 #include "./curve_editor.h"
 #include "../editor-lib/transformation.h"
 
-struct app_rendering_state
-{
-	segment_with_separators<double> segment_mouseover;
-	int last;
-	double segmentBegin, segmentLength;
-	int nearest;
-};
-
 class Application
 {
 	Gfx320x200& gfx;
@@ -20,7 +12,7 @@ class Application
 	std::condition_variable signal;
 	void ThreadMethod();
 	bool DoWork();
-	void DoRenderingWork(const app_rendering_state&);
+	void DoRenderingWork();
 
 	bool mouse_l = false;
 	bool edit_mode = false;
@@ -33,6 +25,7 @@ class Application
 
 	curve the_curve;
 	curve_editor the_curve_editor;
+	curve_editor::nearest_result target;
 	
 	int segmentDataAdd = 0;
 
