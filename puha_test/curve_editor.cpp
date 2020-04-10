@@ -70,14 +70,6 @@ curve_editor::get_nearest_edit_control(float x, float y)
 	auto best_distance = editor_math::min(
 		param_distance, left_distance, right_distance);
 
-	//if (segmentDataAdd != 0) {
-	//	segment_param_count += segmentDataAdd;
-	//	segmentDataAdd = 0;
-	//	if (segment_param_count > 8)segment_param_count = 8;
-	//	if (segment_param_count < 1)segment_param_count = 1;
-	//	segment_mouseover.segment.params.resize(segment_param_count);
-	//}
-
 	if (best_distance == param_distance) 
 	{
 		return nearest_result
@@ -116,6 +108,24 @@ curve_editor::get_nearest_edit_control(float x, float y)
 	}
 
 	throw "should never get here";
+}
+
+void curve_editor::remove_zero_length_segments()
+{
+	curve->remove_zero_length_segments();
+}
+
+void curve_editor::change_param_count(int segmentDataAdd, float x)
+{
+	auto target = curve->get_segment(x);
+	auto segment_param_count = target.segment.params.size();
+	if (segmentDataAdd != 0) {
+		segment_param_count += segmentDataAdd;
+		segmentDataAdd = 0;
+		if (segment_param_count > 8)segment_param_count = 8;
+		if (segment_param_count < 1)segment_param_count = 1;
+		target.segment.params.resize(segment_param_count);
+	}
 }
 
 static int get_nearest_param_index(

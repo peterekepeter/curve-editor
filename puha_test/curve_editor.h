@@ -25,4 +25,6 @@ public:
 	};
 
 	nearest_result get_nearest_edit_control(float x, float y);
+	void remove_zero_length_segments();
+	void change_param_count(int delta, float x);
 };

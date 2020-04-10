@@ -89,6 +89,23 @@ segment& curve::find_segment(time_t time) {
 	return get_segment_by_index(find_segment_index(time));
 }
 
+void curve::remove_zero_length_segments()
+{
+	bool continue_checking = true;
+	while (continue_checking) {
+		continue_checking = false;
+		for (size_t i = 1; i < separators.size(); i++) {
+			if (separators[i - 1] != separators[i]) {
+				continue;
+			}
+			segments.erase(segments.begin() + i);
+			separators.erase(separators.begin() + i);
+			continue_checking = true;
+			break;
+		}
+	}
+}
+
 segment& curve::get_segment_by_index(curve::index_t index)
 {
 	return this->segments[index];

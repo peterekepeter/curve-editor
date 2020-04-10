@@ -4,16 +4,6 @@
 #include "../curviness/curviness.h"
 #include "../editor-lib/editor_math.h"
 
-float linear_to_srgb(float linear) {
-	if (linear < 0.0031308f) {
-		return linear * 12.92f;
-	}
-	else {
-		return 1.055f * std::pow(linear, 1.0f / 2.4f) - 0.055f;
-	}
-}
-
-
 static void init_curve(curve& c);
 
 void Application::ThreadMethod()
@@ -50,18 +40,6 @@ static void init_curve(curve& c) {
 	seg2.params[1] = +.5f;
 }
 
-
-struct rect
-{
-	int left, right, top, bottom;
-	bool is_inside(int x, int y) { return 
-		left < x && x < right && 
-		top < y && y < bottom; 
-	}
-	int get_width() { return right - left; }
-	int get_height() { return bottom - top; }
-};
-
 bool Application::DoWork()
 {
 	bool mouse_l_pressed = mouse_l && !mouse_l_prev;
@@ -71,6 +49,26 @@ bool Application::DoWork()
 	// input segment_mouseover
 	float mouse_curve_x = screen_to_curve.apply_x(mouse_x);
 	float mouse_curve_y = screen_to_curve.apply_y(mouse_y);
+
+	if (split_action)
+	{
+		if (edit_mode) 
+		{
+			the_curve.split(mouse_curve_x);
+			target = the_curve_editor.get_nearest_edit_control(mouse_curve_x, mouse_curve_y);
+		}
+		split_action = false;
+	}
+
+	if (edit_mode && mouse_l_released) {
+		the_curve.remove_zero_length_segments();
+	}
+
+	if (segmentDataAdd != 0) {
+		the_curve_editor.change_param_count(
+			segmentDataAdd, mouse_curve_x);
+		segmentDataAdd = 0;
+	}
 
 	if (mouse_l_pressed || !mouse_l) {
 		target = the_curve_editor.get_nearest_edit_control(mouse_curve_x, mouse_curve_y);
@@ -126,15 +124,6 @@ void Application::DoRenderingWork()
 			screen_to_curve
 		}
 	);
-
-
-	if (edit_mode) {
-		gfx.SetColor(mouse_l ? 0x00ff00 : 0xff0000);
-	}
-	else
-	{
-		gfx.SetColor(0xffffff);
-	}
 
 	bool is_hover = false, is_active = false;
 	if (edit_mode) {
@@ -255,5 +244,11 @@ void Application::IncreasePoints()
 void Application::DecreasePoints()
 {
 	segmentDataAdd--;
+	signal.notify_all();
+}
+
+void Application::SplitCurve()
+{
+	split_action = true;
 	signal.notify_all();
 }

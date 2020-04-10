@@ -30,6 +30,7 @@ class Application
 	curve_editor::nearest_result hover_target;
 	
 	int segmentDataAdd = 0;
+	bool split_action = false;
 
 	// should be last
 	std::thread app_thread;
@@ -45,6 +46,7 @@ public:
 	void SetRedrawHandler(std::function<void()> handler);
 	void IncreasePoints();
 	void DecreasePoints();
+	void SplitCurve();
 	void ZoomIn();
 	void ZoomOut();
 };
