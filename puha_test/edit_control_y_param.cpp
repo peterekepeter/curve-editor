@@ -19,14 +19,25 @@ void edit_control_y_param::render(Gfx320x200& gfx, const rprops& props)
 	double curve_x;
 
 	if (last_index <= 0) {
-		curve_x = (target.left + target.right) / 2;
+		curve_x = 0;
+		double weight = 0;
+		if (std::isfinite(target.left)) {
+			curve_x += target.left;
+			weight++;
+		}
+		if (std::isfinite(target.right)) {
+			curve_x += target.right;
+			weight++;
+		}
+		curve_x /= weight;
 	}
 	else {
 		curve_x = target.left + param_index * (target.right - target.left) 
 			/ last_index;
 	}
 
-	float curve_y = target.segment.params[param_index];
+	//float curve_y = target.segment.params[param_index];
+	float curve_y = target.segment.eval(target.left, curve_x, target.right);
 
 	int screen_x = static_cast<int>(props.curve_to_screen.apply_x(curve_x));
 	int screen_y = static_cast<int>(props.curve_to_screen.apply_y(curve_y));
@@ -34,6 +45,11 @@ void edit_control_y_param::render(Gfx320x200& gfx, const rprops& props)
 		&& screen_y > 1 && screen_y < gfx.Height - 2) {
 		gfx.RectangleFilled(screen_x - 1, screen_y - 1, screen_x + 1, screen_y + 1);
 	}
+}
+
+float edit_control_y_param::get_edit_sensitivity()
+{
+	return 1;
 }
 
 void edit_control_y_param::write_edit(float x, float y)

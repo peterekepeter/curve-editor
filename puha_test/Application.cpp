@@ -64,16 +64,16 @@ bool Application::DoWork()
 		the_curve.remove_zero_length_segments();
 	}
 
-	if (segmentDataAdd != 0) {
+	if (edit_mode && segmentDataAdd != 0) {
 		the_curve_editor.change_param_count(
 			segmentDataAdd, mouse_curve_x);
-		segmentDataAdd = 0;
 	}
+	segmentDataAdd = 0;
 
-	if (mouse_l_pressed || !mouse_l) {
+	if (edit_mode && (mouse_l_pressed || !mouse_l)) {
 		target = the_curve_editor.get_nearest_edit_control(mouse_curve_x, mouse_curve_y);
 	}
-	
+
 	// some logic
 	auto delta_x = mouse_x - last_mouse_x;
 	auto delta_y = mouse_y - last_mouse_y;
@@ -82,7 +82,10 @@ bool Application::DoWork()
 		if (mouse_l && did_move) {
 			float dx = screen_to_curve.scale_x * delta_x;
 			float dy = screen_to_curve.scale_y * delta_y;
-			target.control->add_edit(dx, dy);
+			if (target.control) 
+			{
+				target.control->add_edit(dx, dy);
+			}
 		}
 	} else {
 		if (mouse_l) {
@@ -137,14 +140,17 @@ void Application::DoRenderingWork()
 
 	if (is_active || is_hover)
 	{
-		target.control->render(gfx, edit_control::rprops
-			{
-				curve_to_screen,
-				screen_to_curve,
-				is_hover,
-				is_active
-			}
-		);
+		if (target.control)
+		{
+			target.control->render(gfx, edit_control::rprops
+				{
+					curve_to_screen,
+					screen_to_curve,
+					is_hover,
+					is_active
+				}
+			);
+		}
 	}
 
 	if (edit_mode) {
@@ -215,6 +221,16 @@ void Application::UpdateLeftButton(bool pressed)
 {
 	if (pressed != mouse_l) {
 		mouse_l = pressed;
+		signal.notify_all();
+	}
+}
+
+void Application::CancelCurrentEdit()
+{
+	if (target.control) 
+	{
+		target.control->reject_edit();
+		target.reset();
 		signal.notify_all();
 	}
 }

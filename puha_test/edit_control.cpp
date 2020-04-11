@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "edit_control.h"
 
+float edit_control::get_edit_sensitivity()
+{
+	return 1.0f;
+}
+
 edit_control::edit_control()
 	: original_x(NAN)
 	, original_y(NAN)

@@ -11,6 +11,8 @@ public:
 	// reads the edited values from the edited structure
 	virtual void read_edit(float& x, float& y) = 0;
 
+	virtual float get_edit_sensitivity();
+
 	edit_control();
 	virtual ~edit_control();
 

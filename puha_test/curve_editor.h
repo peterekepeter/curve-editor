@@ -22,6 +22,7 @@ public:
 	{
 		float distance;
 		std::unique_ptr<edit_control> control;
+		void reset();
 	};
 
 	nearest_result get_nearest_edit_control(float x, float y);

@@ -42,6 +42,7 @@ public:
 
 	void ShiftView(int amount);
 	void UpdateLeftButton(bool pressed);
+	void CancelCurrentEdit();
 	void UpdateMousePos(int x, int y);
 	void SetRedrawHandler(std::function<void()> handler);
 	void IncreasePoints();

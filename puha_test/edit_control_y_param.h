@@ -12,6 +12,7 @@ public:
 	virtual void write_edit(float x, float y) override;
 	virtual void read_edit(float& x, float& y) override;
 	virtual void render(Gfx320x200& gfx, const rprops& props) override;
+	virtual float get_edit_sensitivity() override;
 
 private:
 	segment_with_separators<double> target;

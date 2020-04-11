@@ -14,9 +14,9 @@ void curve_editor::render(Gfx320x200& gfx, const rprops& props)
 
 	// rendering props
 	const int max_samples = 5;
-	const int add_val_r = 2 * 44 / max_samples;
-	const int add_val_g = 2 * 188 / max_samples;
-	const int add_val_b = 2 * 32 / max_samples;
+	const int add_val_r = 2 * 64 / max_samples;
+	const int add_val_g = 2 * 128 / max_samples;
+	const int add_val_b = 2 * 255 / max_samples;
 	// render
 	gfx.SetColor(0xffffff);
 
@@ -163,4 +163,10 @@ static int get_nearest_param_index(
 	}
 	
 	return nearest_param_index;
+}
+
+void curve_editor::nearest_result::reset()
+{
+	distance = NAN;
+	control.reset(nullptr);
 }
