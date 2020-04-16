@@ -17,8 +17,8 @@ public:
 	virtual ~edit_control();
 
 	void add_edit(float dx, float dy);
-	void resolve_edit();
-	void reject_edit();
+	void apply_edit();
+	void revert_edit();
 
 	struct rprops
 	{

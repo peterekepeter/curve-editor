@@ -47,9 +47,22 @@ void edit_control_y_param::render(Gfx320x200& gfx, const rprops& props)
 	}
 }
 
+static float factorial(float n)
+{
+	if (n <= 1)
+	{
+		return 1;
+	}
+	return n * factorial(n - 1);
+}
+
+static float coef(float n, float k) {
+	return factorial(n) / factorial(k) / factorial(n - k);
+}
+
 float edit_control_y_param::get_edit_sensitivity()
 {
-	return 1;
+	return coef(target.segment.params.size()-1, param_index);
 }
 
 void edit_control_y_param::write_edit(float x, float y)

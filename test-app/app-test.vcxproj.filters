@@ -21,6 +21,12 @@
     <ClCompile Include="test_transformation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test_split_command.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test_editor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">

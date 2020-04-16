@@ -83,7 +83,7 @@ curve_editor::get_nearest_edit_control(float x, float y)
 
 	if (best_distance == left_distance)
 	{
-		size_t separator_index = curve->find_separator(
+		size_t separator_index = curve->find_separator_index(
 			nearest_segment.left);
 
 		return nearest_result
@@ -96,7 +96,7 @@ curve_editor::get_nearest_edit_control(float x, float y)
 
 	if (best_distance == right_distance)
 	{
-		size_t separator_index = curve->find_separator(
+		size_t separator_index = curve->find_separator_index(
 			nearest_segment.right);
 
 		return nearest_result

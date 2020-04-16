@@ -2,6 +2,7 @@
 #include "../curviness/curviness.h"
 #include "./curve_editor.h"
 #include "../editor-lib/transformation.h"
+#include "../editor-lib/editor.h"
 
 class Application
 {
@@ -24,7 +25,7 @@ class Application
 	transformation curve_to_screen;
 	transformation screen_to_curve;
 
-	curve the_curve;
+	editor editor;
 	curve_editor the_curve_editor;
 	curve_editor::nearest_result target;
 	curve_editor::nearest_result hover_target;
@@ -50,4 +51,6 @@ public:
 	void SplitCurve();
 	void ZoomIn();
 	void ZoomOut();
+	void Undo();
+	void Redo();
 };

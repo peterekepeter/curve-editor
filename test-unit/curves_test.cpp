@@ -12,14 +12,14 @@ namespace curviness_test
 			curve curve;
 			auto a = curve.split(30);
 			auto b = curve.split(60);
-			Assert::AreEqual(a, curve.find_separator(30));
-			Assert::AreEqual(b, curve.find_separator(60));
-			Assert::AreEqual(a, curve.find_separator(-200));
-			Assert::AreEqual(a, curve.find_separator(40));
-			Assert::AreEqual(b, curve.find_separator(50));
-			Assert::AreEqual(b, curve.find_separator(999));
-			Assert::AreEqual(a, curve.find_separator(-INFINITY));
-			Assert::AreEqual(b, curve.find_separator(+INFINITY));
+			Assert::AreEqual(a, curve.find_separator_index(30));
+			Assert::AreEqual(b, curve.find_separator_index(60));
+			Assert::AreEqual(a, curve.find_separator_index(-200));
+			Assert::AreEqual(a, curve.find_separator_index(40));
+			Assert::AreEqual(b, curve.find_separator_index(50));
+			Assert::AreEqual(b, curve.find_separator_index(999));
+			Assert::AreEqual(a, curve.find_separator_index(-INFINITY));
+			Assert::AreEqual(b, curve.find_separator_index(+INFINITY));
 		}
 
 		TEST_METHOD(find_separator_throws_if_no_separators)
@@ -27,7 +27,7 @@ namespace curviness_test
 			curve curve;
 			try 
 			{
-				curve.find_separator(30);
+				curve.find_separator_index(30);
 				Assert::Fail();
 			}
 			catch (const char* message)

@@ -17,7 +17,7 @@ struct curve
 	segment_with_separators<time_t> get_segment(time_t time);
 
 	index_t find_segment_index(time_t time) const;
-	index_t find_separator(time_t time) const;
+	index_t find_separator_index(time_t time) const;
 	void remove_split(index_t index);
 	void remove_zero_length_segments();
 	segment& get_segment_by_index(index_t index);

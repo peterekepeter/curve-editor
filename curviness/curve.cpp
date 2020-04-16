@@ -52,7 +52,7 @@ size_t curve::find_segment_index(time_t time) const
 	return begin;
 }
 
-curve::index_t curve::find_separator(time_t time) const
+curve::index_t curve::find_separator_index(time_t time) const
 {
 	size_t separator_count = separators.size();
 	if (separator_count == 0)
@@ -83,6 +83,12 @@ curve::index_t curve::find_separator(time_t time) const
 	{
 		return segment_index;
 	}
+}
+
+void curve::remove_split(index_t index)
+{
+	segments.erase(segments.begin() + index);
+	separators.erase(separators.begin() + index);
 }
 
 segment& curve::find_segment(time_t time) {

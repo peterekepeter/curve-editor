@@ -19,12 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="command_base.h" />
+    <ClInclude Include="command_curve_base.h" />
+    <ClInclude Include="command_split.h" />
+    <ClInclude Include="document_model.h" />
+    <ClInclude Include="editor.h" />
     <ClInclude Include="editor_math.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="transformation.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="command_base.cpp" />
+    <ClCompile Include="command_curve_base.cpp" />
+    <ClCompile Include="command_split.cpp" />
+    <ClCompile Include="editor.cpp" />
     <ClCompile Include="transformation.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\curviness\curviness.vcxproj">
+      <Project>{e645429e-0b78-4684-941f-b2121333e84d}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

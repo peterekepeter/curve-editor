@@ -25,15 +25,16 @@ void edit_control::add_edit(float dx, float dy)
 		dirty = true;
 		read_edit(original_x, original_y);
 	}
-	edit_x += dx;
-	edit_y += dy;
+	float sens = get_edit_sensitivity();
+	edit_x += dx * sens;
+	edit_y += dy * sens;
 
 	write_edit(
 		original_x + edit_x, 
 		original_y + edit_y);
 }
 
-void edit_control::resolve_edit()
+void edit_control::apply_edit()
 {
 	if (dirty) {
 		write_edit(
@@ -42,7 +43,7 @@ void edit_control::resolve_edit()
 	}
 }
 
-void edit_control::reject_edit()
+void edit_control::revert_edit()
 {
 	if (dirty) {
 		write_edit(original_x, original_y);

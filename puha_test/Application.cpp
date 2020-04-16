@@ -3,12 +3,15 @@
 #include "Application.h"
 #include "../curviness/curviness.h"
 #include "../editor-lib/editor_math.h"
+#include "../editor-lib/command_split.h"
 
 static void init_curve(curve& c);
 
 void Application::ThreadMethod()
 {
 	// init code
+	editor.document.curve_list.emplace_back();
+	auto& the_curve = editor.document.curve_list[0];
 	init_curve(the_curve);
 	curve_to_screen = transformation{ 50, -100, 160, 100 };
 	screen_to_curve = curve_to_screen.inverse();
@@ -54,13 +57,15 @@ bool Application::DoWork()
 	{
 		if (edit_mode) 
 		{
-			the_curve.split(mouse_curve_x);
+			editor.commit(std::make_unique<command::split>(
+				editor.document, 0, mouse_curve_x));
 			target = the_curve_editor.get_nearest_edit_control(mouse_curve_x, mouse_curve_y);
 		}
 		split_action = false;
 	}
 
 	if (edit_mode && mouse_l_released) {
+		auto& the_curve = editor.document.curve_list[0];
 		the_curve.remove_zero_length_segments();
 	}
 
@@ -217,6 +222,18 @@ void Application::ZoomOut()
 	signal.notify_all();
 }
 
+void Application::Undo()
+{
+	editor.undo();
+	signal.notify_all();
+}
+
+void Application::Redo()
+{
+	editor.redo();
+	signal.notify_all();
+}
+
 void Application::UpdateLeftButton(bool pressed)
 {
 	if (pressed != mouse_l) {
@@ -229,7 +246,7 @@ void Application::CancelCurrentEdit()
 {
 	if (target.control) 
 	{
-		target.control->reject_edit();
+		target.control->revert_edit();
 		target.reset();
 		signal.notify_all();
 	}
