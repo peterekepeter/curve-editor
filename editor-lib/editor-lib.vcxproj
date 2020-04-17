@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="command_base.h" />
     <ClInclude Include="command_curve_base.h" />
+    <ClInclude Include="command_edit_separator.h" />
     <ClInclude Include="command_split.h" />
     <ClInclude Include="document_model.h" />
     <ClInclude Include="document_editor.h" />
@@ -31,6 +32,7 @@
   <ItemGroup>
     <ClCompile Include="command_base.cpp" />
     <ClCompile Include="command_curve_base.cpp" />
+    <ClCompile Include="command_edit_separator.cpp" />
     <ClCompile Include="command_split.cpp" />
     <ClCompile Include="document_editor.cpp" />
     <ClCompile Include="transformation.cpp" />

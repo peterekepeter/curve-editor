@@ -182,3 +182,8 @@ void curve::set_separator_value(index_t index, time_t value)
 	}
 	separators[index] = value;
 }
+
+size_t curve::get_separator_count() const
+{
+	return separators.size();
+}
