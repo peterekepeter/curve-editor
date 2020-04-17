@@ -12,4 +12,6 @@
 #include "CppUnitTest.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+#include "custom_checks.h"
+
 #endif //PCH_H

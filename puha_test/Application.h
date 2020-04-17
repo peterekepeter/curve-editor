@@ -5,7 +5,7 @@
 #include "../curviness/curviness.h"
 #include "./curve_editor.h"
 #include "../editor-lib/transformation.h"
-#include "../editor-lib/document_editor.h"
+#include "../editor-lib/editor.h"
 
 class Application
 {
@@ -29,7 +29,7 @@ class Application
 	transformation curve_to_screen;
 	transformation screen_to_curve;
 
-	document_editor document_editor;
+	editor editor;
 	curve_editor the_curve_editor;
 	curve_editor::nearest_result target;
 	curve_editor::nearest_result hover_target;

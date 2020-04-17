@@ -10,8 +10,8 @@ static void init_curve(curve& c);
 void Application::ThreadMethod()
 {
 	// init code
-	document_editor.document.curve_list.emplace_back();
-	auto& the_curve = document_editor.document.curve_list[0];
+	editor.document.curve_list.emplace_back();
+	auto& the_curve = editor.document.curve_list[0];
 	init_curve(the_curve);
 	curve_to_screen = transformation{ 50, -100, 160, 100 };
 	screen_to_curve = curve_to_screen.inverse();
@@ -56,7 +56,7 @@ bool Application::DoWork()
 	mouse_curve_y = screen_to_curve.apply_y(mouse_y);
 
 	if (edit_mode && mouse_l_released) {
-		auto& the_curve = document_editor.document.curve_list[0];
+		auto& the_curve = editor.document.curve_list[0];
 		the_curve.remove_zero_length_segments();
 	}
 
@@ -228,12 +228,12 @@ void Application::ZoomOut()
 
 void Application::Undo()
 {
-	defer([this]{ this->document_editor.undo(); });
+	defer([this]{ this->editor.history.undo(); });
 }
 
 void Application::Redo()
 {
-	defer([this]{ this->document_editor.redo(); });
+	defer([this]{ this->editor.history.redo(); });
 }
 
 void Application::UpdateLeftButton(bool pressed)
@@ -289,7 +289,7 @@ void Application::SplitCurve()
 {
 	defer([this] {
 		if (!edit_mode) { return; }
-		this->document_editor.commit(std::make_unique<command::split>(
-			document_editor.document, 0, mouse_curve_x));
+		this->editor.history.commit(std::make_unique<commands::split>(
+			editor.document, 0, mouse_curve_x));
 	});
 }

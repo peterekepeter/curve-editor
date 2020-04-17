@@ -1,18 +1,19 @@
-#include "document_editor.h"
+#include "editor_history.h"
 
-bool editor::undo()
+bool editor_history::undo()
 {
 	if (history_index > 0) {
 		history[history_index - 1]->undo();
 		history_index--;
 		return true;
-	} else {
+	}
+	else {
 		return false;
 	}
 	return false;
 }
 
-bool editor::redo()
+bool editor_history::redo()
 {
 	if (history_index < history.size())
 	{
@@ -27,7 +28,7 @@ bool editor::redo()
 	return false;
 }
 
-void editor::commit(std::unique_ptr<command::base> cmd)
+void editor_history::commit(std::unique_ptr<commands::base> cmd)
 {
 	if (history_index < history.size()) {
 		history.resize(history_index);

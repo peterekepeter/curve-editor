@@ -1,7 +1,7 @@
 #pragma once
 #include "./command_curve_base.h"
 
-namespace command
+namespace commands
 {
 	class edit_separator : public curve_base
 	{

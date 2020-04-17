@@ -1,7 +1,7 @@
 #pragma once
 #include "command_base.h"
 
-namespace command
+namespace commands
 {
 	class curve_base : public base
 	{

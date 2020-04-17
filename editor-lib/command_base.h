@@ -1,7 +1,7 @@
 #pragma once
 #include "./document_model.h"
 
-namespace command
+namespace commands
 {
 	class base
 	{

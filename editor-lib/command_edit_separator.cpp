@@ -1,13 +1,13 @@
 #include "command_edit_separator.h"
 
-command::edit_separator::edit_separator(document_model& document, size_t curve_index, double x_from, double x_to)
+commands::edit_separator::edit_separator(document_model& document, size_t curve_index, double x_from, double x_to)
 	: curve_base(document, curve_index)
 	, x_from(x_from)
 	, x_to(x_to)
 {
 }
 
-void command::edit_separator::execute()
+void commands::edit_separator::execute()
 {
 	auto& curve = get_selected_curve();
 	auto index = curve.find_separator_index(x_from);
@@ -19,7 +19,7 @@ void command::edit_separator::execute()
 	double value = x_to;
 
 	if (x_to > x_from) {
-		time_t max_val = +INFINITY;
+		double max_val = +INFINITY;
 		if (index + 1 < separator_count) {
 			max_val = curve.get_separator_value(index + 1);
 		}
@@ -29,7 +29,7 @@ void command::edit_separator::execute()
 			remove_at_index = index;
 		}
 	} else {
-		time_t min_val = -INFINITY;
+		double min_val = -INFINITY;
 		if (index > 0) {
 			min_val = curve.get_separator_value(index - 1);
 		}
@@ -51,7 +51,7 @@ void command::edit_separator::execute()
 	}
 }
 
-void command::edit_separator::revert()
+void commands::edit_separator::revert()
 {
 	auto& curve = get_selected_curve();
 	if (!did_remove) {

@@ -39,9 +39,6 @@
     <ClInclude Include="document_model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="document_editor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="editor_math.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
@@ -53,6 +50,12 @@
     </ClInclude>
     <ClInclude Include="command_edit_separator.h">
       <Filter>Header Files\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="editor_history.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="editor.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -68,10 +71,10 @@
     <ClCompile Include="transformation.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="document_editor.cpp">
+    <ClCompile Include="command_edit_separator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="command_edit_separator.cpp">
+    <ClCompile Include="document_history.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

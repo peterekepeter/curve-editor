@@ -10,14 +10,14 @@ namespace lib
 
 		TEST_METHOD(registers_and_executes_commands)
 		{
-			document_editor document_editor;
-			document_editor.document.curve_list.emplace_back();
-			auto& curve = document_editor.document.curve_list[0];
+			editor editor;
+			editor.document.curve_list.emplace_back();
+			auto& curve = editor.document.curve_list[0];
 
-			document_editor.commit(std::make_unique
-				<command::split>(document_editor.document, 0, 13.0));
-			document_editor.commit(std::make_unique
-				<command::split>(document_editor.document, 0, 42.0));
+			editor.history.commit(std::make_unique
+				<commands::split>(editor.document, 0, 13.0));
+			editor.history.commit(std::make_unique
+				<commands::split>(editor.document, 0, 42.0));
 
 			Assert::AreEqual(size_t(0), 
 				curve.find_segment_index(10.0));
@@ -29,17 +29,17 @@ namespace lib
 
 		TEST_METHOD(commands_can_be_undone)
 		{
-			document_editor document_editor;
-			document_editor.document.curve_list.emplace_back();
-			auto& curve = document_editor.document.curve_list[0];
+			editor editor;
+			editor.document.curve_list.emplace_back();
+			auto& curve = editor.document.curve_list[0];
 
-			document_editor.commit(std::make_unique
-				<command::split>(document_editor.document, 0, 13.0));
-			document_editor.commit(std::make_unique
-				<command::split>(document_editor.document, 0, 42.0));
+			editor.history.commit(std::make_unique
+				<commands::split>(editor.document, 0, 13.0));
+			editor.history.commit(std::make_unique
+				<commands::split>(editor.document, 0, 42.0));
 
-			document_editor.undo();
-			document_editor.undo();
+			editor.history.undo();
+			editor.history.undo();
 
 			Assert::AreEqual(size_t(0),
 				curve.find_segment_index(10.0));
@@ -51,20 +51,20 @@ namespace lib
 
 		TEST_METHOD(commands_can_be_redone)
 		{
-			document_editor document_editor;
-			document_editor.document.curve_list.emplace_back();
-			auto& curve = document_editor.document.curve_list[0];
+			editor editor;
+			editor.document.curve_list.emplace_back();
+			auto& curve = editor.document.curve_list[0];
 
-			document_editor.commit(std::make_unique
-				<command::split>(document_editor.document, 0, 13.0));
-			document_editor.commit(std::make_unique
-				<command::split>(document_editor.document, 0, 42.0));
+			editor.history.commit(std::make_unique
+				<commands::split>(editor.document, 0, 13.0));
+			editor.history.commit(std::make_unique
+				<commands::split>(editor.document, 0, 42.0));
 
-			document_editor.undo();
-			document_editor.undo();
+			editor.history.undo();
+			editor.history.undo();
 
-			document_editor.redo();
-			document_editor.redo();
+			editor.history.redo();
+			editor.history.redo();
 
 			Assert::AreEqual(size_t(0),
 				curve.find_segment_index(10.0));
@@ -72,6 +72,26 @@ namespace lib
 				curve.find_segment_index(15.0));
 			Assert::AreEqual(size_t(2),
 				curve.find_segment_index(64.0));
+		}
+		
+		TEST_METHOD(unro_redo_limits)
+		{
+			editor editor;
+			editor.document.curve_list.emplace_back();
+
+			Assert::IsFalse(editor.history.undo());
+			Assert::IsFalse(editor.history.redo());
+
+			editor.history.commit(std::make_unique
+				<commands::split>(editor.document, 0, 13.0));
+			
+			Assert::IsTrue(editor.history.undo());
+			Assert::IsFalse(editor.history.undo());
+			Assert::IsFalse(editor.history.undo());
+
+			Assert::IsTrue(editor.history.redo());
+			Assert::IsFalse(editor.history.redo());
+			Assert::IsFalse(editor.history.redo());
 		}
 	};
 }

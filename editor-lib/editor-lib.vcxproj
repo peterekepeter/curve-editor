@@ -23,8 +23,9 @@
     <ClInclude Include="command_curve_base.h" />
     <ClInclude Include="command_edit_separator.h" />
     <ClInclude Include="command_split.h" />
+    <ClInclude Include="editor_history.h" />
     <ClInclude Include="document_model.h" />
-    <ClInclude Include="document_editor.h" />
+    <ClInclude Include="editor.h" />
     <ClInclude Include="editor_math.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="transformation.h" />
@@ -34,7 +35,7 @@
     <ClCompile Include="command_curve_base.cpp" />
     <ClCompile Include="command_edit_separator.cpp" />
     <ClCompile Include="command_split.cpp" />
-    <ClCompile Include="document_editor.cpp" />
+    <ClCompile Include="document_history.cpp" />
     <ClCompile Include="transformation.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -1,11 +1,11 @@
 #include "command_base.h"
 
-command::base::base(document_model& document)
+commands::base::base(document_model& document)
 	: document(document) { }
 
-command::base::~base() { }
+commands::base::~base() { }
 
-void command::base::exec()
+void commands::base::exec()
 {
 	if (did_execute == true) {
 		throw "cannot execute twice";
@@ -14,7 +14,7 @@ void command::base::exec()
 	did_execute = true;
 }
 
-void command::base::undo()
+void commands::base::undo()
 {
 	if (did_execute == false) {
 		throw "cannot undo if not executed";
