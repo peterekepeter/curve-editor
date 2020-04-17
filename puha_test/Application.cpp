@@ -10,8 +10,8 @@ static void init_curve(curve& c);
 void Application::ThreadMethod()
 {
 	// init code
-	editor.document.curve_list.emplace_back();
-	auto& the_curve = editor.document.curve_list[0];
+	document_editor.document.curve_list.emplace_back();
+	auto& the_curve = document_editor.document.curve_list[0];
 	init_curve(the_curve);
 	curve_to_screen = transformation{ 50, -100, 160, 100 };
 	screen_to_curve = curve_to_screen.inverse();
@@ -45,35 +45,20 @@ static void init_curve(curve& c) {
 
 bool Application::DoWork()
 {
+	execute_work_items();
+
 	bool mouse_l_pressed = mouse_l && !mouse_l_prev;
 	bool mouse_l_released = !mouse_l && mouse_l_prev;
 	// Update Logic /////////////////////////
 
 	// input segment_mouseover
-	float mouse_curve_x = screen_to_curve.apply_x(mouse_x);
-	float mouse_curve_y = screen_to_curve.apply_y(mouse_y);
-
-	if (split_action)
-	{
-		if (edit_mode) 
-		{
-			editor.commit(std::make_unique<command::split>(
-				editor.document, 0, mouse_curve_x));
-			target = the_curve_editor.get_nearest_edit_control(mouse_curve_x, mouse_curve_y);
-		}
-		split_action = false;
-	}
+	mouse_curve_x = screen_to_curve.apply_x(mouse_x);
+	mouse_curve_y = screen_to_curve.apply_y(mouse_y);
 
 	if (edit_mode && mouse_l_released) {
-		auto& the_curve = editor.document.curve_list[0];
+		auto& the_curve = document_editor.document.curve_list[0];
 		the_curve.remove_zero_length_segments();
 	}
-
-	if (edit_mode && segmentDataAdd != 0) {
-		the_curve_editor.change_param_count(
-			segmentDataAdd, mouse_curve_x);
-	}
-	segmentDataAdd = 0;
 
 	if (edit_mode && (mouse_l_pressed || !mouse_l)) {
 		target = the_curve_editor.get_nearest_edit_control(mouse_curve_x, mouse_curve_y);
@@ -109,10 +94,29 @@ bool Application::DoWork()
 
 	this->DoRenderingWork();
 
-	if (segmentDataAdd != 0) {
-		return true;
-	}
 	return false;
+}
+
+void Application::defer(std::function<void()> fn)
+{
+	work_items_mutex.lock();
+	work_items.push(fn);
+	work_items_mutex.unlock();
+	signal.notify_all();
+}
+
+void Application::execute_work_items()
+{
+	work_items_mutex.lock();
+	while (!work_items.empty())
+	{
+		auto fn = work_items.front();
+		work_items.pop();
+		work_items_mutex.unlock();
+		fn();
+		work_items_mutex.lock();
+	}
+	work_items_mutex.unlock();
 }
 
 void Application::DoRenderingWork()
@@ -187,8 +191,7 @@ Application::~Application()
 
 void Application::ToggleEditMode()
 {
-	edit_mode = !edit_mode;
-	signal.notify_all();
+	defer([this] { edit_mode = !edit_mode; });
 }
 
 void Application::ShiftView(int amount)
@@ -217,39 +220,37 @@ void Application::ZoomIn()
 
 void Application::ZoomOut()
 {
-	apply_zoom(curve_to_screen, 0.5f, mouse_x, mouse_y);
-	screen_to_curve = curve_to_screen.inverse();
-	signal.notify_all();
+	defer([this] {
+		apply_zoom(curve_to_screen, 0.5f, mouse_x, mouse_y);
+		screen_to_curve = curve_to_screen.inverse();
+	});
 }
 
 void Application::Undo()
 {
-	editor.undo();
-	signal.notify_all();
+	defer([this]{ this->document_editor.undo(); });
 }
 
 void Application::Redo()
 {
-	editor.redo();
-	signal.notify_all();
+	defer([this]{ this->document_editor.redo(); });
 }
 
 void Application::UpdateLeftButton(bool pressed)
 {
-	if (pressed != mouse_l) {
-		mouse_l = pressed;
-		signal.notify_all();
-	}
+	defer([this, pressed] { mouse_l = pressed; });
 }
 
 void Application::CancelCurrentEdit()
 {
-	if (target.control) 
-	{
-		target.control->revert_edit();
-		target.reset();
-		signal.notify_all();
-	}
+	defer([this] {
+		if (target.control)
+		{
+			target.control->revert_edit();
+			target.reset();
+			signal.notify_all();
+		}
+	});
 }
 
 void Application::UpdateMousePos(int x, int y)
@@ -270,18 +271,25 @@ void Application::SetRedrawHandler(std::function<void()> handler)
 
 void Application::IncreasePoints()
 {
-	segmentDataAdd++;
-	signal.notify_all();
+	defer([this] {
+		the_curve_editor.change_param_count(
+			+1, mouse_curve_x);
+	});
 }
 
 void Application::DecreasePoints()
 {
-	segmentDataAdd--;
-	signal.notify_all();
+	defer([this] {
+		the_curve_editor.change_param_count(
+			-1, mouse_curve_x);
+	});
 }
 
 void Application::SplitCurve()
 {
-	split_action = true;
-	signal.notify_all();
+	defer([this] {
+		if (!edit_mode) { return; }
+		this->document_editor.commit(std::make_unique<command::split>(
+			document_editor.document, 0, mouse_curve_x));
+	});
 }

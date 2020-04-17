@@ -19,17 +19,14 @@
     <Filter Include="Source Files\Commands">
       <UniqueIdentifier>{b2788532-334a-434d-af74-a7a9fb450cca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utilities">
+      <UniqueIdentifier>{a0c140e8-e407-4b32-8692-3113f3bdbc2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utilities">
+      <UniqueIdentifier>{c99d6ac7-4b73-4d17-a471-a5f1cc160e0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="transformation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="point.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="editor_math.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="command_split.h">
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
@@ -42,14 +39,20 @@
     <ClInclude Include="document_model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="editor.h">
+    <ClInclude Include="document_editor.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="editor_math.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="point.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation.h">
+      <Filter>Header Files\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="transformation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="command_split.cpp">
       <Filter>Source Files\Commands</Filter>
     </ClCompile>
@@ -59,7 +62,10 @@
     <ClCompile Include="command_curve_base.cpp">
       <Filter>Source Files\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="editor.cpp">
+    <ClCompile Include="transformation.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="document_editor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

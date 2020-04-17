@@ -13,5 +13,8 @@ namespace command
 		// Inherited via base
 		virtual void execute() override;
 		virtual void revert() override;
+
+	private:
+		segment original_segment;
 	};
 }

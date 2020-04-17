@@ -1,8 +1,11 @@
 #pragma once
+#include <queue>
+#include <functional>
+#include <mutex>
 #include "../curviness/curviness.h"
 #include "./curve_editor.h"
 #include "../editor-lib/transformation.h"
-#include "../editor-lib/editor.h"
+#include "../editor-lib/document_editor.h"
 
 class Application
 {
@@ -21,17 +24,21 @@ class Application
 
 	int mouse_x = 0, mouse_y = 0;
 	int last_mouse_x = 0, last_mouse_y = 0;
+	float mouse_curve_x, mouse_curve_y;
 
 	transformation curve_to_screen;
 	transformation screen_to_curve;
 
-	editor editor;
+	document_editor document_editor;
 	curve_editor the_curve_editor;
 	curve_editor::nearest_result target;
 	curve_editor::nearest_result hover_target;
-	
-	int segmentDataAdd = 0;
-	bool split_action = false;
+
+	std::queue<std::function<void()>> work_items;
+	std::mutex work_items_mutex;
+
+	void defer(std::function<void()>);
+	void execute_work_items();
 
 	// should be last
 	std::thread app_thread;

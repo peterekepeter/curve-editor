@@ -3,7 +3,7 @@
 #include "./command_base.h"
 #include "./document_model.h"
 
-class editor
+class document_editor
 {
 public:
 	document_model document;

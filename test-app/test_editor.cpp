@@ -10,14 +10,14 @@ namespace lib
 
 		TEST_METHOD(registers_and_executes_commands)
 		{
-			editor editor;
-			editor.document.curve_list.emplace_back();
-			auto& curve = editor.document.curve_list[0];
+			document_editor document_editor;
+			document_editor.document.curve_list.emplace_back();
+			auto& curve = document_editor.document.curve_list[0];
 
-			editor.commit(std::make_unique
-				<command::split>(editor.document, 0, 13.0));
-			editor.commit(std::make_unique
-				<command::split>(editor.document, 0, 42.0));
+			document_editor.commit(std::make_unique
+				<command::split>(document_editor.document, 0, 13.0));
+			document_editor.commit(std::make_unique
+				<command::split>(document_editor.document, 0, 42.0));
 
 			Assert::AreEqual(size_t(0), 
 				curve.find_segment_index(10.0));
@@ -29,17 +29,17 @@ namespace lib
 
 		TEST_METHOD(commands_can_be_undone)
 		{
-			editor editor;
-			editor.document.curve_list.emplace_back();
-			auto& curve = editor.document.curve_list[0];
+			document_editor document_editor;
+			document_editor.document.curve_list.emplace_back();
+			auto& curve = document_editor.document.curve_list[0];
 
-			editor.commit(std::make_unique
-				<command::split>(editor.document, 0, 13.0));
-			editor.commit(std::make_unique
-				<command::split>(editor.document, 0, 42.0));
+			document_editor.commit(std::make_unique
+				<command::split>(document_editor.document, 0, 13.0));
+			document_editor.commit(std::make_unique
+				<command::split>(document_editor.document, 0, 42.0));
 
-			editor.undo();
-			editor.undo();
+			document_editor.undo();
+			document_editor.undo();
 
 			Assert::AreEqual(size_t(0),
 				curve.find_segment_index(10.0));
@@ -51,20 +51,20 @@ namespace lib
 
 		TEST_METHOD(commands_can_be_redone)
 		{
-			editor editor;
-			editor.document.curve_list.emplace_back();
-			auto& curve = editor.document.curve_list[0];
+			document_editor document_editor;
+			document_editor.document.curve_list.emplace_back();
+			auto& curve = document_editor.document.curve_list[0];
 
-			editor.commit(std::make_unique
-				<command::split>(editor.document, 0, 13.0));
-			editor.commit(std::make_unique
-				<command::split>(editor.document, 0, 42.0));
+			document_editor.commit(std::make_unique
+				<command::split>(document_editor.document, 0, 13.0));
+			document_editor.commit(std::make_unique
+				<command::split>(document_editor.document, 0, 42.0));
 
-			editor.undo();
-			editor.undo();
+			document_editor.undo();
+			document_editor.undo();
 
-			editor.redo();
-			editor.redo();
+			document_editor.redo();
+			document_editor.redo();
 
 			Assert::AreEqual(size_t(0),
 				curve.find_segment_index(10.0));
