@@ -6,6 +6,7 @@
 #include "./curve_editor.h"
 #include "../editor-lib/transformation.h"
 #include "../editor-lib/editor.h"
+#include "./tool_base.h"
 
 class Application
 {
@@ -20,7 +21,10 @@ class Application
 
 	bool mouse_l = false;
 	bool mouse_l_prev = false;
-	bool edit_mode = false;
+	bool tool_edit_active = false;
+	bool tool_split_active = false;
+	std::unique_ptr<tool_base> tool_split_instance;
+	std::unique_ptr<commands::base> preview_command;
 
 	int mouse_x = 0, mouse_y = 0;
 	int last_mouse_x = 0, last_mouse_y = 0;

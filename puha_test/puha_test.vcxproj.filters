@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Tools">
+      <UniqueIdentifier>{01dc233d-d24c-4e77-b053-68e648386965}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tools">
+      <UniqueIdentifier>{2d663bf5-4e32-49b5-9757-403faf42b8b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -36,6 +42,12 @@
     <ClInclude Include="edit_control_separator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="tool_base.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="tool_split.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -58,6 +70,12 @@
     </ClCompile>
     <ClCompile Include="edit_control_separator.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tool_split.cpp">
+      <Filter>Source Files\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="tool_base.cpp">
+      <Filter>Source Files\tools</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

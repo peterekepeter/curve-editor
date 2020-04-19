@@ -4,6 +4,7 @@
 #include "../curviness/curviness.h"
 #include "../editor-lib/editor_math.h"
 #include "../editor-lib/command_split.h"
+#include "./tool_split.h"
 
 static void init_curve(curve& c);
 
@@ -54,35 +55,64 @@ bool Application::DoWork()
 	// input segment_mouseover
 	mouse_curve_x = screen_to_curve.apply_x(mouse_x);
 	mouse_curve_y = screen_to_curve.apply_y(mouse_y);
-
-	if (edit_mode && mouse_l_released) {
-		auto& the_curve = editor.document.curve_list[0];
-		the_curve.remove_zero_length_segments();
-	}
-
-	if (edit_mode && (mouse_l_pressed || !mouse_l)) {
-		target = the_curve_editor.get_nearest_edit_control(mouse_curve_x, mouse_curve_y);
-	}
-
-	// some logic
 	auto delta_x = mouse_x - last_mouse_x;
 	auto delta_y = mouse_y - last_mouse_y;
+	float curve_dx = screen_to_curve.scale_x * delta_x;
+	float curve_dy = screen_to_curve.scale_y * delta_y;
 	bool did_move = (delta_x != 0 || delta_y != 0);
-	if (edit_mode) {
+
+	if (preview_command) {
+		preview_command->undo();
+		preview_command.reset();
+	}
+
+	if (tool_edit_active) {
+		auto& the_curve = editor.document.curve_list[0];
+
+		if ((mouse_l_pressed || !mouse_l)) {
+			target = the_curve_editor.get_nearest_edit_control(mouse_curve_x, mouse_curve_y);
+		}
+
+		if (mouse_l_released) {
+			the_curve.remove_zero_length_segments();
+		}
 		if (mouse_l && did_move) {
-			float dx = screen_to_curve.scale_x * delta_x;
-			float dy = screen_to_curve.scale_y * delta_y;
-			if (target.control) 
+			if (target.control)
 			{
-				target.control->add_edit(dx, dy);
+				target.control->add_edit(curve_dx, curve_dy);
 			}
 		}
-	} else {
+	}
+	else if (tool_split_active) {
+		if (tool_split_instance == false) {
+			tool_split_instance = std::make_unique<tool_split>
+				(editor.document, 0);
+			tool_split_instance->update_mouse_curve(
+				mouse_curve_x, mouse_curve_y);
+		}
+		if (mouse_l_released)
+		{
+			tool_split_instance->mouse_l_release();
+		}
+		if (did_move) {
+			tool_split_instance->update_mouse_curve(
+				mouse_curve_x, mouse_curve_y);
+		}
+		if (tool_split_instance->is_complete()) {
+			editor.history.commit(
+				tool_split_instance->get_command());
+			tool_split_instance.reset();
+		}
+		else {
+			preview_command =
+				tool_split_instance->get_command();
+			preview_command->exec();
+		}
+	}
+	else {
 		if (mouse_l) {
-			curve_to_screen.translate_x += 
-				delta_x;
-			curve_to_screen.translate_y +=
-				delta_y;
+			curve_to_screen.translate_x += delta_x;
+			curve_to_screen.translate_y += delta_y;
 			screen_to_curve = curve_to_screen.inverse();
 		}
 	}
@@ -138,7 +168,7 @@ void Application::DoRenderingWork()
 	);
 
 	bool is_hover = false, is_active = false;
-	if (edit_mode) {
+	if (tool_edit_active) {
 		if (mouse_l) {
 			is_active = true;
 		}
@@ -160,11 +190,6 @@ void Application::DoRenderingWork()
 				}
 			);
 		}
-	}
-
-	if (edit_mode) {
-		gfx.SetColor(0xff0000);
-		gfx.Rectangle(0, 0, 319, 199);
 	}
 
 	if (!gfx.AreBoundsValid()) {
@@ -191,7 +216,11 @@ Application::~Application()
 
 void Application::ToggleEditMode()
 {
-	defer([this] { edit_mode = !edit_mode; });
+	defer([this] { 
+		if (!tool_split_active) {
+			tool_edit_active = !tool_edit_active;
+		}
+	});
 }
 
 void Application::ShiftView(int amount)
@@ -244,6 +273,8 @@ void Application::UpdateLeftButton(bool pressed)
 void Application::CancelCurrentEdit()
 {
 	defer([this] {
+		tool_edit_active = false;
+		tool_split_active = false;
 		if (target.control)
 		{
 			target.control->revert_edit();
@@ -288,8 +319,7 @@ void Application::DecreasePoints()
 void Application::SplitCurve()
 {
 	defer([this] {
-		if (!edit_mode) { return; }
-		this->editor.history.commit(std::make_unique<commands::split>(
-			editor.document, 0, mouse_curve_x));
+		tool_split_active = true;
+		tool_edit_active = false;
 	});
 }
