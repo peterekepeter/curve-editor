@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "tool_base.h"
 
+void tool_base::mouse_l_press()
+{
+}
+
 void tool_base::mouse_l_release()
 {
 
@@ -17,6 +21,11 @@ bool tool_base::is_complete()
 }
 
 tool_base::~tool_base()
+{
+
+}
+
+void tool_base::render(Gfx320x200& gfx, const rprops& props)
 {
 
 }

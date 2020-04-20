@@ -1,10 +1,14 @@
 #pragma once
 #include "../puha-render/puha-render.h"
 #include "../editor-lib/transformation.h"
+#include "./tool_base.h"
 
 class edit_control
 {
 public:
+
+	document_model& document;
+	size_t curve_index;
 
 	// writes the edit into the edited structure
 	virtual void write_edit(float x, float y) = 0;
@@ -13,12 +17,18 @@ public:
 
 	virtual float get_edit_sensitivity();
 
-	edit_control();
+	edit_control(document_model& document, size_t curve_index);
 	virtual ~edit_control();
 
 	void add_edit(float dx, float dy);
 	void apply_edit();
 	void revert_edit();
+
+	virtual tool_base::command_ptr get_command(
+		float x_from, 
+		float y_from,
+		float x_to, 
+		float y_to) = 0;
 
 	struct rprops
 	{

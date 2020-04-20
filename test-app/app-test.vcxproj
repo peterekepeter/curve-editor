@@ -163,6 +163,7 @@
   <ItemGroup>
     <ClCompile Include="custom_checks.cpp" />
     <ClCompile Include="test_editor.cpp" />
+    <ClCompile Include="test_edit_param_command.cpp" />
     <ClCompile Include="test_edit_separator_command.cpp" />
     <ClCompile Include="test_split_command.cpp" />
     <ClCompile Include="test_transformation.cpp" />

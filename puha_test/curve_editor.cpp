@@ -15,11 +15,12 @@ void curve_editor::render(Gfx320x200& gfx, const rprops& props)
 	// rendering props
 	const int max_samples = 5;
 	const int add_val_r = 2 * 64 / max_samples;
-	const int add_val_g = 2 * 128 / max_samples;
+	const int add_val_g = 2 * 160 / max_samples;
 	const int add_val_b = 2 * 255 / max_samples;
 	// render
 	gfx.SetColor(0xffffff);
 
+	auto& curve = document.curve_list[curve_index];
 	float inv_sub_max = 1.0f / max_samples;
 
 	float t = 0;
@@ -28,7 +29,7 @@ void curve_editor::render(Gfx320x200& gfx, const rprops& props)
 
 			auto screen_x_f = screen_x + sample * inv_sub_max;
 			auto curve_x = props.screen_to_curve.apply_x(screen_x_f);
-			auto curve_y = curve->eval(curve_x);
+			auto curve_y = curve.eval(curve_x);
 			auto screen_y_f = props.curve_to_screen.apply_y(curve_y);
 			int screen_y = static_cast<int>(screen_y_f);
 
@@ -61,9 +62,10 @@ static int get_nearest_param_index(
 curve_editor::nearest_result
 curve_editor::get_nearest_edit_control(float x, float y)
 {
-	auto nearest_segment = curve->get_segment(x);
+	auto& curve = document.curve_list[curve_index];
+	auto nearest_segment = curve.get_segment(x);
 	auto param_index = get_nearest_param_index(nearest_segment, x);
-	auto param_distance = abs(curve->eval(x) - y);
+	auto param_distance = abs(curve.eval(x) - y);
 
 	auto left_distance = abs(float(x - nearest_segment.left));
 	auto right_distance = abs(float(nearest_segment.right - x));
@@ -76,6 +78,8 @@ curve_editor::get_nearest_edit_control(float x, float y)
 		{
 			param_distance,
 			std::make_unique<edit_control_y_param>(
+				document,
+				curve_index,
 				nearest_segment, 
 				param_index)
 		};
@@ -83,27 +87,33 @@ curve_editor::get_nearest_edit_control(float x, float y)
 
 	if (best_distance == left_distance)
 	{
-		size_t separator_index = curve->find_separator_index(
+		size_t separator_index = curve.find_separator_index(
 			nearest_segment.left);
 
 		return nearest_result
 		{
 			left_distance,
 			std::make_unique<edit_control_separator>(
-				*curve, separator_index)
+				document,
+				curve_index,
+				curve, 
+				separator_index)
 		};
 	}
 
 	if (best_distance == right_distance)
 	{
-		size_t separator_index = curve->find_separator_index(
+		size_t separator_index = curve.find_separator_index(
 			nearest_segment.right);
 
 		return nearest_result
 		{
 			right_distance,
 			std::make_unique<edit_control_separator>(
-				*curve, separator_index)
+				document, 
+				curve_index,
+				curve, 
+				separator_index)
 		};
 	}
 
@@ -112,12 +122,14 @@ curve_editor::get_nearest_edit_control(float x, float y)
 
 void curve_editor::remove_zero_length_segments()
 {
-	curve->remove_zero_length_segments();
+	auto& curve = document.curve_list[curve_index];
+	curve.remove_zero_length_segments();
 }
 
 void curve_editor::change_param_count(int segmentDataAdd, float x)
 {
-	auto target = curve->get_segment(x);
+	auto& curve = document.curve_list[curve_index];
+	auto target = curve.get_segment(x);
 	auto segment_param_count = target.segment.params.size();
 	if (segmentDataAdd != 0) {
 		segment_param_count += segmentDataAdd;

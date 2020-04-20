@@ -8,7 +8,8 @@
 class curve_editor
 {
 public:
-	curve* curve;
+	document_model& document;
+	size_t curve_index;
 
 	struct rprops
 	{

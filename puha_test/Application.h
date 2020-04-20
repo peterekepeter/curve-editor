@@ -21,10 +21,10 @@ class Application
 
 	bool mouse_l = false;
 	bool mouse_l_prev = false;
-	bool tool_edit_active = false;
-	bool tool_split_active = false;
-	std::unique_ptr<tool_base> tool_split_instance;
+	bool tool_active = false;
+	std::unique_ptr<tool_base> tool_instance;
 	std::unique_ptr<commands::base> preview_command;
+	curve_editor the_curve_editor;
 
 	int mouse_x = 0, mouse_y = 0;
 	int last_mouse_x = 0, last_mouse_y = 0;
@@ -34,9 +34,6 @@ class Application
 	transformation screen_to_curve;
 
 	editor editor;
-	curve_editor the_curve_editor;
-	curve_editor::nearest_result target;
-	curve_editor::nearest_result hover_target;
 
 	std::queue<std::function<void()>> work_items;
 	std::mutex work_items_mutex;

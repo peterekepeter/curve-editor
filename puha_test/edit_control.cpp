@@ -6,13 +6,16 @@ float edit_control::get_edit_sensitivity()
 	return 1.0f;
 }
 
-edit_control::edit_control()
-	: original_x(NAN)
+edit_control::edit_control(document_model& document, size_t curve_index)
+	: document(document)
+	, curve_index(curve_index)
+	, original_x(NAN)
 	, original_y(NAN)
 	, edit_x(0)
 	, edit_y(0)
 	, dirty(false) 
 {}
+
 
 edit_control::~edit_control()
 {

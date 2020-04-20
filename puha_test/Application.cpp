@@ -5,6 +5,7 @@
 #include "../editor-lib/editor_math.h"
 #include "../editor-lib/command_split.h"
 #include "./tool_split.h"
+#include "./tool_edit.h"
 
 static void init_curve(curve& c);
 
@@ -16,8 +17,6 @@ void Application::ThreadMethod()
 	init_curve(the_curve);
 	curve_to_screen = transformation{ 50, -100, 160, 100 };
 	screen_to_curve = curve_to_screen.inverse();
-
-	the_curve_editor.curve = &the_curve;
 	
 	// main
 	std::unique_lock<std::mutex> lock(thread_mutex);
@@ -37,10 +36,10 @@ static void init_curve(curve& c) {
 	seg0.params.resize(1);
 	seg0.params[0] = -.5f;
 	auto& seg1 = c.find_segment(.5f);
-	seg1.params.resize(2);
+	seg1.params.resize(1);
 	seg1.params[0] = -.5f;
 	auto& seg2 = c.find_segment(.8f);
-	seg2.params.resize(5);
+	seg2.params.resize(3);
 	seg2.params[1] = +.5f;
 }
 
@@ -66,47 +65,30 @@ bool Application::DoWork()
 		preview_command.reset();
 	}
 
-	if (tool_edit_active) {
-		auto& the_curve = editor.document.curve_list[0];
-
-		if ((mouse_l_pressed || !mouse_l)) {
-			target = the_curve_editor.get_nearest_edit_control(mouse_curve_x, mouse_curve_y);
+	if (tool_active && tool_instance) {
+		if (did_move || mouse_l_pressed || mouse_l_released) {
+			tool_instance->update_mouse_curve(
+				mouse_curve_x, mouse_curve_y);
 		}
-
+		if (mouse_l_pressed) {
+			tool_instance->mouse_l_press();
+		}
 		if (mouse_l_released) {
-			the_curve.remove_zero_length_segments();
+			tool_instance->mouse_l_release();
 		}
-		if (mouse_l && did_move) {
-			if (target.control)
-			{
-				target.control->add_edit(curve_dx, curve_dy);
+		if (tool_instance->is_complete()) {
+			auto cmd = tool_instance->get_command();
+			if (cmd) {
+				editor.history.commit(std::move(cmd));
 			}
-		}
-	}
-	else if (tool_split_active) {
-		if (tool_split_instance == false) {
-			tool_split_instance = std::make_unique<tool_split>
-				(editor.document, 0);
-			tool_split_instance->update_mouse_curve(
-				mouse_curve_x, mouse_curve_y);
-		}
-		if (mouse_l_released)
-		{
-			tool_split_instance->mouse_l_release();
-		}
-		if (did_move) {
-			tool_split_instance->update_mouse_curve(
-				mouse_curve_x, mouse_curve_y);
-		}
-		if (tool_split_instance->is_complete()) {
-			editor.history.commit(
-				tool_split_instance->get_command());
-			tool_split_instance.reset();
+			tool_instance.reset();
 		}
 		else {
-			preview_command =
-				tool_split_instance->get_command();
-			preview_command->exec();
+			auto cmd = tool_instance->get_command();
+			if (cmd) {
+				preview_command = std::move(cmd);
+				preview_command->exec();
+			}
 		}
 	}
 	else {
@@ -167,30 +149,39 @@ void Application::DoRenderingWork()
 		}
 	);
 
-	bool is_hover = false, is_active = false;
-	if (tool_edit_active) {
-		if (mouse_l) {
-			is_active = true;
-		}
-		else {
-			is_hover = true;
-		}
+	if (tool_active && tool_instance) {
+		const auto props =
+			tool_base::rprops{
+				curve_to_screen,
+				screen_to_curve
+		};
+		tool_instance->render(gfx, props);
 	}
 
-	if (is_active || is_hover)
-	{
-		if (target.control)
-		{
-			target.control->render(gfx, edit_control::rprops
-				{
-					curve_to_screen,
-					screen_to_curve,
-					is_hover,
-					is_active
-				}
-			);
-		}
-	}
+	//bool is_hover = false, is_active = false;
+	//if (tool_edit_active) {
+	//	if (mouse_l) {
+	//		is_active = true;
+	//	}
+	//	else {
+	//		is_hover = true;
+	//	}
+	//}
+
+	//if (is_active || is_hover)
+	//{
+	//	if (target.control)
+	//	{
+	//		target.control->render(gfx, edit_control::rprops
+	//			{
+	//				curve_to_screen,
+	//				screen_to_curve,
+	//				is_hover,
+	//				is_active
+	//			}
+	//		);
+	//	}
+	//}
 
 	if (!gfx.AreBoundsValid()) {
 		throw "oh crap!";
@@ -204,6 +195,7 @@ Application::Application(Gfx320x200& gfx)
 	, app_thread(std::thread([this]{ ThreadMethod(); }))
 	, onredraw([]{})
 	, is_running(true)
+	, the_curve_editor{ editor.document, 0 }
 {
 	// dont init here, it will cause race condition, do all init in ThreadMethod
 }
@@ -212,15 +204,6 @@ Application::~Application()
 {
 	is_running = false;
 	app_thread.join();
-}
-
-void Application::ToggleEditMode()
-{
-	defer([this] { 
-		if (!tool_split_active) {
-			tool_edit_active = !tool_edit_active;
-		}
-	});
 }
 
 void Application::ShiftView(int amount)
@@ -273,14 +256,7 @@ void Application::UpdateLeftButton(bool pressed)
 void Application::CancelCurrentEdit()
 {
 	defer([this] {
-		tool_edit_active = false;
-		tool_split_active = false;
-		if (target.control)
-		{
-			target.control->revert_edit();
-			target.reset();
-			signal.notify_all();
-		}
+		tool_active = false;
 	});
 }
 
@@ -303,23 +279,37 @@ void Application::SetRedrawHandler(std::function<void()> handler)
 void Application::IncreasePoints()
 {
 	defer([this] {
-		the_curve_editor.change_param_count(
-			+1, mouse_curve_x);
+		/*the_curve_editor.change_param_count(
+			+1, mouse_curve_x);*/
 	});
 }
 
 void Application::DecreasePoints()
 {
 	defer([this] {
-		the_curve_editor.change_param_count(
-			-1, mouse_curve_x);
+		/*the_curve_editor.change_param_count(
+			-1, mouse_curve_x);*/
 	});
 }
 
 void Application::SplitCurve()
 {
 	defer([this] {
-		tool_split_active = true;
-		tool_edit_active = false;
+		tool_active = true;
+		tool_instance = std::make_unique<tool_split>(
+			editor.document, 0);
+		tool_instance->update_mouse_curve(
+			mouse_curve_x, mouse_curve_y);
+	});
+}
+
+void Application::ToggleEditMode()
+{
+	defer([this] {
+		tool_active = true;
+		tool_instance = std::make_unique<tool_edit>(
+			editor.document, 0);
+		tool_instance->update_mouse_curve(
+			mouse_curve_x, mouse_curve_y);
 	});
 }
