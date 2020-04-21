@@ -39,7 +39,7 @@ static void init_curve(curve& c) {
 	seg1.params.resize(1);
 	seg1.params[0] = -.5f;
 	auto& seg2 = c.find_segment(.8f);
-	seg2.params.resize(3);
+	seg2.params.resize(8);
 	seg2.params[1] = +.5f;
 }
 

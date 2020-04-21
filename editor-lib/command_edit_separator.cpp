@@ -26,7 +26,7 @@ void commands::edit_separator::execute()
 		if (value >= max_val) {
 			value = max_val;
 			remove = true;
-			remove_at_index = index;
+			remove_at_index = index + 1;
 		}
 	} else {
 		double min_val = -INFINITY;
@@ -37,7 +37,7 @@ void commands::edit_separator::execute()
 		if (value <= min_val) {
 			value = min_val;
 			remove = true;
-			remove_at_index = index - 1;
+			remove_at_index = index;
 		}
 	}
 
@@ -45,7 +45,7 @@ void commands::edit_separator::execute()
 	if (remove) {
 		// todo cleanup ops
 		removed_segment = curve.get_segment_by_index(
-			remove_at_index + 1);
+			remove_at_index);
 		curve.remove_split(remove_at_index);
 		did_remove = true;
 	}

@@ -102,6 +102,38 @@ namespace test_commands
 			Assert::AreEqual(size_t(2), curve.get_separator_count());
 		}
 
+		TEST_METHOD(correct_segment_is_removed_when_squashing_to_right)
+		{
+			// arrange
+			auto document = document_with_2_splits();
+			size_t curve_index = 0;
+			auto& curve = document.curve_list[curve_index];
+			auto cmd = edit_separator(document, curve_index, 1.0, 2.0);
+			Assert::AreEqual(1.0f, curve.eval(1.5), 1e-6f);
+
+			// act
+			cmd.exec();
+
+			// assert
+			Assert::AreEqual(0.0f, curve.eval(1.5), 1e-6f);
+		}
+
+		TEST_METHOD(correct_segment_is_removed_when_squashing_to_left)
+		{
+			// arrange
+			auto document = document_with_2_splits();
+			size_t curve_index = 0;
+			auto& curve = document.curve_list[curve_index];
+			auto cmd = edit_separator(document, curve_index, 2.0, 1.0);
+			Assert::AreEqual(1.0f, curve.eval(1.5), 1e-6f);
+
+			// act
+			cmd.exec();
+
+			// assert
+			Assert::AreEqual(0.0f, curve.eval(1.5), 1e-6f);
+		}
+
 		document_model document_with_splits(std::initializer_list<double> splits) {
 			auto document = document_model();
 			document.curve_list.emplace_back();
@@ -109,6 +141,13 @@ namespace test_commands
 			for (auto split : splits) {
 				curve.split(split);
 			}
+			return document;
+		}
+
+		document_model document_with_2_splits() {
+			auto document = document_with_splits({1.0, 2.0});
+			auto& middle = document.curve_list[0].find_segment(1.5);
+			middle.params[0] = 1.0f;
 			return document;
 		}
 	};
