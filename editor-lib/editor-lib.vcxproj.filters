@@ -60,6 +60,9 @@
     <ClInclude Include="command_edit_param.h">
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
+    <ClInclude Include="command_change_segment.h">
+      <Filter>Header Files\Commands</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="command_split.cpp">
@@ -74,14 +77,17 @@
     <ClCompile Include="transformation.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="command_edit_separator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="document_history.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="command_edit_param.cpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="command_edit_separator.cpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="editor_history.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="command_change_segment.cpp">
+      <Filter>Source Files\Commands</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

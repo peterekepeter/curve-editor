@@ -13,6 +13,7 @@ public:
 
 	virtual void mouse_l_press();
 	virtual void mouse_l_release();
+	virtual void update_mouse_screen(float x, float y);
 	virtual void update_mouse_curve(float x, float y);
 	virtual bool is_complete();
 	virtual ~tool_base();

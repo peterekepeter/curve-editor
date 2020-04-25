@@ -22,6 +22,9 @@
     <Filter Include="Header Files\Tools\Edit">
       <UniqueIdentifier>{6d383b3c-8063-4f87-99e4-a3d2035aa94b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\tools\Edit">
+      <UniqueIdentifier>{5b226a89-f04f-4e87-94d2-4c54b0b2ef9e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -54,6 +57,9 @@
     <ClInclude Include="edit_control_separator.h">
       <Filter>Header Files\Tools\Edit</Filter>
     </ClInclude>
+    <ClInclude Include="tool_param_count.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -65,18 +71,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="curve_editor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="edit_control_y_param.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="edit_control.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="edit_control_separator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="tool_split.cpp">
       <Filter>Source Files\tools</Filter>
     </ClCompile>
@@ -84,7 +78,22 @@
       <Filter>Source Files\tools</Filter>
     </ClCompile>
     <ClCompile Include="tool_edit.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="edit_control_separator.cpp">
+      <Filter>Source Files\tools\Edit</Filter>
+    </ClCompile>
+    <ClCompile Include="edit_control_y_param.cpp">
+      <Filter>Source Files\tools\Edit</Filter>
+    </ClCompile>
+    <ClCompile Include="edit_control.cpp">
+      <Filter>Source Files\tools\Edit</Filter>
+    </ClCompile>
+    <ClCompile Include="curve_editor.cpp">
+      <Filter>Source Files\tools\Edit</Filter>
+    </ClCompile>
+    <ClCompile Include="tool_param_count.cpp">
+      <Filter>Source Files\tools</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

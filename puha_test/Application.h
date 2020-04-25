@@ -61,4 +61,5 @@ public:
 	void ZoomOut();
 	void Undo();
 	void Redo();
+	void ChangeParamCount();
 };

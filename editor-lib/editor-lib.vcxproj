@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -23,6 +23,7 @@
     <ClInclude Include="command_curve_base.h" />
     <ClInclude Include="command_edit_param.h" />
     <ClInclude Include="command_edit_separator.h" />
+    <ClInclude Include="command_change_segment.h" />
     <ClInclude Include="command_split.h" />
     <ClInclude Include="editor_history.h" />
     <ClInclude Include="document_model.h" />
@@ -36,8 +37,9 @@
     <ClCompile Include="command_curve_base.cpp" />
     <ClCompile Include="command_edit_param.cpp" />
     <ClCompile Include="command_edit_separator.cpp" />
+    <ClCompile Include="command_change_segment.cpp" />
     <ClCompile Include="command_split.cpp" />
-    <ClCompile Include="document_history.cpp" />
+    <ClCompile Include="editor_history.cpp" />
     <ClCompile Include="transformation.cpp" />
   </ItemGroup>
   <ItemGroup>

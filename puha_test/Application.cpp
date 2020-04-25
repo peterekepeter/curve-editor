@@ -6,6 +6,7 @@
 #include "../editor-lib/command_split.h"
 #include "./tool_split.h"
 #include "./tool_edit.h"
+#include "./tool_param_count.h"
 
 static void init_curve(curve& c);
 
@@ -69,6 +70,8 @@ bool Application::DoWork()
 		if (did_move || mouse_l_pressed || mouse_l_released) {
 			tool_instance->update_mouse_curve(
 				mouse_curve_x, mouse_curve_y);
+			tool_instance->update_mouse_screen(
+				mouse_x, mouse_y);
 		}
 		if (mouse_l_pressed) {
 			tool_instance->mouse_l_press();
@@ -300,6 +303,8 @@ void Application::SplitCurve()
 			editor.document, 0);
 		tool_instance->update_mouse_curve(
 			mouse_curve_x, mouse_curve_y);
+		tool_instance->update_mouse_screen(
+			mouse_x, mouse_y);
 	});
 }
 
@@ -311,5 +316,20 @@ void Application::ToggleEditMode()
 			editor.document, 0);
 		tool_instance->update_mouse_curve(
 			mouse_curve_x, mouse_curve_y);
+		tool_instance->update_mouse_screen(
+			mouse_x, mouse_y);
+	});
+}
+
+void Application::ChangeParamCount() 
+{
+	defer([this] {
+		tool_active = true;
+		tool_instance = std::make_unique<tool_param_count>(
+			editor.document, 0);
+		tool_instance->update_mouse_curve(
+			mouse_curve_x, mouse_curve_y);
+		tool_instance->update_mouse_screen(
+			mouse_x, mouse_y);
 	});
 }

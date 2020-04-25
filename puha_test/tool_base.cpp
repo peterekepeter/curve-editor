@@ -10,6 +10,11 @@ void tool_base::mouse_l_release()
 
 }
 
+void tool_base::update_mouse_screen(float x, float y)
+{
+
+}
+
 void tool_base::update_mouse_curve(float x, float y)
 {
 
