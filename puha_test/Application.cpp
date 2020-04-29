@@ -145,6 +145,16 @@ void Application::DoRenderingWork()
 	gfx.RectangleFilled(0, 0, 319, 199);
 	gfx.SetColor(0x222222);
 
+	render.curve_to_screen = curve_to_screen;
+	render.screen_to_curve = screen_to_curve;
+
+	auto curve_index = the_curve_editor.curve_index;
+	if (curve_index >= 0 
+		&& curve_index < editor.document.curve_list.size()) {
+		auto& selected_curve = editor.document.curve_list[curve_index];
+		render.separator_lines(selected_curve, 0x222222);
+	}
+
 	the_curve_editor.render(gfx, 
 		curve_editor::rprops{
 			curve_to_screen,
@@ -199,6 +209,8 @@ Application::Application(Gfx320x200& gfx)
 	, onredraw([]{})
 	, is_running(true)
 	, the_curve_editor{ editor.document, 0 }
+	, device(gfx)
+	, render(device)
 {
 	// dont init here, it will cause race condition, do all init in ThreadMethod
 }
@@ -277,22 +289,6 @@ void Application::SetRedrawHandler(std::function<void()> handler)
 	onredraw = handler;
 	onredraw();
 	signal.notify_all();
-}
-
-void Application::IncreasePoints()
-{
-	defer([this] {
-		/*the_curve_editor.change_param_count(
-			+1, mouse_curve_x);*/
-	});
-}
-
-void Application::DecreasePoints()
-{
-	defer([this] {
-		/*the_curve_editor.change_param_count(
-			-1, mouse_curve_x);*/
-	});
 }
 
 void Application::SplitCurve()

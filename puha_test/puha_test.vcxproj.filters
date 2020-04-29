@@ -60,6 +60,12 @@
     <ClInclude Include="tool_param_count.h">
       <Filter>Header Files\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="rendering_device.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -94,6 +100,12 @@
     </ClCompile>
     <ClCompile Include="tool_param_count.cpp">
       <Filter>Source Files\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="rendering_device.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

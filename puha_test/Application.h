@@ -6,11 +6,17 @@
 #include "./curve_editor.h"
 #include "../editor-lib/transformation.h"
 #include "../editor-lib/editor.h"
+#include "../puha-render/puha-render.h"
 #include "./tool_base.h"
+#include "./rendering_device.h"
+#include "./renderer.h"
 
 class Application
 {
 	Gfx320x200& gfx;
+	rendering_device device;
+	renderer render;
+
 	std::function<void()> onredraw;
 	bool is_running;
 	std::mutex thread_mutex;
@@ -54,8 +60,6 @@ public:
 	void CancelCurrentEdit();
 	void UpdateMousePos(int x, int y);
 	void SetRedrawHandler(std::function<void()> handler);
-	void IncreasePoints();
-	void DecreasePoints();
 	void SplitCurve();
 	void ZoomIn();
 	void ZoomOut();

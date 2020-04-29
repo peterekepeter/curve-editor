@@ -152,6 +152,8 @@
     <ClInclude Include="edit_control.h" />
     <ClInclude Include="edit_control_separator.h" />
     <ClInclude Include="edit_control_y_param.h" />
+    <ClInclude Include="rendering_device.h" />
+    <ClInclude Include="renderer.h" />
     <ClInclude Include="tool_edit.h" />
     <ClInclude Include="tool_param_count.h" />
     <ClInclude Include="tool_split.h" />
@@ -162,6 +164,8 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="curve_editor.cpp" />
+    <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="rendering_device.cpp" />
     <ClCompile Include="edit_control.cpp" />
     <ClCompile Include="edit_control_separator.cpp" />
     <ClCompile Include="edit_control_y_param.cpp" />
