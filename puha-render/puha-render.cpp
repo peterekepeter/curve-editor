@@ -38,6 +38,16 @@ bool Gfx320x200::AreBoundsValid() {
 	return is_valid;
 }
 
+ClippedGfx<Gfx320x200> Gfx320x200::CreateViewport()
+{
+	return CreateViewport(0, 0, Width, Height);
+}
+
+ClippedGfx<Gfx320x200> Gfx320x200::CreateViewport(int x, int y, int w, int h)
+{
+	return ClippedGfx<Gfx320x200>(*this, x, y, x+w, y+h);
+}
+
 Gfx320x200::~Gfx320x200() {
 	delete[] real_buffer;
 	real_buffer = nullptr;
@@ -45,11 +55,11 @@ Gfx320x200::~Gfx320x200() {
 }
 
 
-void Gfx320x200::PutStr(int x, int y, char* s)
+void Gfx320x200::PutStr(int x, int y, char* s, int color)
 {
 	while (*s)
 	{
-		PutChar(x, y, *s);
+		PutChar(x, y, *s, color);
 		x += font_char_width;
 		s++;
 	}
@@ -91,7 +101,8 @@ static unsigned char font_data_mg[408] = {
 	0x10, 0x20, 0x60, 0x20, 0x10, 0x00, 0x20, 0x20, 0x20, 0x20, 0x20, 0x00,
 	0x40, 0x20, 0x30, 0x20, 0x40, 0x00, 0x00, 0x28, 0x50, 0x00, 0x00, 0x00
 };
-void Gfx320x200::PutChar(int x, int y, char c)
+
+void Gfx320x200::PutChar(int x, int y, char c, int color)
 {
 	int offs = 54;
 	int bwidth = 5;
@@ -110,22 +121,22 @@ void Gfx320x200::PutChar(int x, int y, char c)
 		for (int x0 = 0; x0 < 5; x0++)
 		{
 			int ss = y0 + bitoffs;
-			if (((font_data_mg[ss]) >> (7 - x0)) & 1) PutPixel(x + x0, y + y0);
+			if (((font_data_mg[ss]) >> (7 - x0)) & 1) PutPixel(x + x0, y + y0, color);
 		}
 }
 
-void Gfx320x200::Span(int x, int y, int w)
+void Gfx320x200::Span(int x, int y, int w, int color)
 {
 	int *dest = &(buffer[x + (y << 6) + (y << 8)]);
 	int *endp = dest + w;
 	while (dest < endp) *(dest++) = color;
 }
 
-void Gfx320x200::HLine(int x1, int y1, int x2, int y2)
+void Gfx320x200::HLine(int x1, int y1, int x2, int y2, int color)
 {
-	Span(x1, y1, x2 - x1 + 1);
+	Span(x1, y1, x2 - x1 + 1, color);
 }
-void Gfx320x200::VLine(int x1, int y1, int x2, int y2)
+void Gfx320x200::VLine(int x1, int y1, int x2, int y2, int color)
 {
 	int* dest = &(buffer[x1 + (y1 << 6) + (y1 << 8)]);
 	int w = y2 - y1 + 1;
@@ -133,20 +144,27 @@ void Gfx320x200::VLine(int x1, int y1, int x2, int y2)
 	while (dest < endp) { *(dest) = color; dest = dest + 320; }
 }
 
-void Gfx320x200::Rectangle(int x1, int y1, int x2, int y2)
+void Gfx320x200::Rectangle(int x1, int y1, int x2, int y2, int color)
 {
-	HLine(x1, y1, x2, y1); HLine(x1, y2, x2, y2);
-	VLine(x1, y1, x1, y2); VLine(x2, y1, x2, y2);
+	HLine(x1, y1, x2, y1, color); 
+	HLine(x1, y2, x2, y2, color);
+	VLine(x1, y1, x1, y2, color); 
+	VLine(x2, y1, x2, y2, color);
 }
 
-void Gfx320x200::RectangleFilled(int x1, int y1, int x2, int y2)
+void Gfx320x200::RectangleFilled(int x1, int y1, int x2, int y2, int color)
 {
 	int w = x2 - x1 + 1;
-	for (int i = y1; i <= y2; i++) Span(x1, i, w);
+	for (int i = y1; i <= y2; i++) Span(x1, i, w, color);
 }
 
+void Gfx320x200::RectFill(int x1, int y1, int x2, int y2, int color)
+{
+	int w = x2 - x1;
+	for (int i = y1; i <= y2; i++) Span(x1, i, w, color);
+}
 
-void Gfx320x200::Line(int x1, int y1, int x2, int y2)
+void Gfx320x200::Line(int x1, int y1, int x2, int y2, int color)
 {
 	int dy = y2 - y1;
 
@@ -158,8 +176,8 @@ void Gfx320x200::Line(int x1, int y1, int x2, int y2)
 	else sx = 1;
 
 
-	if (dx == 0) { VLine(x1, y1, x2, y2); return; }
-	else if (dy == 0) { if (sx > 0)HLine(x1, y1, x2, y2); else HLine(x2, y1, x1, y2); return; }
+	if (dx == 0) { VLine(x1, y1, x2, y2, color); return; }
+	else if (dy == 0) { if (sx > 0)HLine(x1, y1, x2, y2, color); else HLine(x2, y1, x1, y2); return; }
 
 
 	int y0 = y1;
@@ -170,7 +188,7 @@ void Gfx320x200::Line(int x1, int y1, int x2, int y2)
 		int cx = dx; cx++;
 		while (cx--)
 		{
-			PutPixel(x0, y0);
+			PutPixel(x0, y0, color);
 			x0 += sx;
 			err += dy + 1;
 			if (err > dx) { err -= dx; y0 += 1; }
@@ -182,7 +200,7 @@ void Gfx320x200::Line(int x1, int y1, int x2, int y2)
 		int cx = dy; cx++;
 		while (cx--)
 		{
-			PutPixel(x0, y0);
+			PutPixel(x0, y0, color);
 			y0 += 1;
 			err += dx;
 			if (err > dy) { err -= dy; x0 += sx; }
