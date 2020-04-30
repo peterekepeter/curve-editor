@@ -30,8 +30,16 @@ void tool_edit::update_mouse_curve(float x, float y)
 	if (!mouse_l_state) {
 		x_from = x;
 		y_from = y;
-		target = editor.get_nearest_edit_control(x_from, y_from);
+		target = editor.get_nearest_edit_control(
+			x_from, 
+			y_from,
+			curve_to_screen);
 	}
+}
+
+void tool_edit::transform_change(const transformation& curve_to_screen)
+{
+	this->curve_to_screen = curve_to_screen;
 }
 
 bool tool_edit::is_complete()

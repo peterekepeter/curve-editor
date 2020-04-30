@@ -62,11 +62,12 @@ bool Application::DoWork()
 	bool did_move = (delta_x != 0 || delta_y != 0);
 
 	if (preview_command) {
-		preview_command->undo();
+		preview_command->undo();	
 		preview_command.reset();
 	}
 
 	if (tool_active && tool_instance) {
+		tool_instance->transform_change(curve_to_screen);
 		if (did_move || mouse_l_pressed || mouse_l_released) {
 			tool_instance->update_mouse_curve(
 				mouse_curve_x, mouse_curve_y);

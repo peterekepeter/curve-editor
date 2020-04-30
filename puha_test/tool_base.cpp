@@ -25,6 +25,10 @@ bool tool_base::is_complete()
 	return false;
 }
 
+void tool_base::transform_change(const transformation& curve_to_screen)
+{
+}
+
 tool_base::~tool_base()
 {
 

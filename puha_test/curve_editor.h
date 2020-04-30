@@ -26,7 +26,7 @@ public:
 		void reset();
 	};
 
-	nearest_result get_nearest_edit_control(float x, float y);
+	nearest_result get_nearest_edit_control(float x, float y, const transformation& curve_to_screen);
 	void remove_zero_length_segments();
 	void change_param_count(int delta, float x);
 };

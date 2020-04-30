@@ -60,15 +60,27 @@ static int get_nearest_param_index(
 );
 
 curve_editor::nearest_result
-curve_editor::get_nearest_edit_control(float x, float y)
+curve_editor::get_nearest_edit_control(float x, float y, const transformation& curve_to_screen)
 {
 	auto& curve = document.curve_list[curve_index];
 	auto nearest_segment = curve.get_segment(x);
 	auto param_index = get_nearest_param_index(nearest_segment, x);
-	auto param_distance = abs(curve.eval(x) - y);
+	
+	float bias_towards_param_pixels = 8;
 
-	auto left_distance = abs(float(x - nearest_segment.left));
-	auto right_distance = abs(float(nearest_segment.right - x));
+	auto param_distance = abs(
+		curve_to_screen.apply_scaling_y(
+			curve.eval(x) - y)) 
+		- bias_towards_param_pixels;
+	
+	auto left_distance = abs(
+		curve_to_screen.apply_scaling_x(
+			float(x - nearest_segment.left)));
+
+	auto right_distance = abs(
+		curve_to_screen.apply_scaling_x(
+			float(nearest_segment.right - x)));
+
 	auto best_distance = editor_math::min(
 		param_distance, left_distance, right_distance);
 
@@ -76,7 +88,7 @@ curve_editor::get_nearest_edit_control(float x, float y)
 	{
 		return nearest_result
 		{
-			param_distance,
+			param_distance + bias_towards_param_pixels,
 			std::make_unique<edit_control_y_param>(
 				document,
 				curve_index,

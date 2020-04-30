@@ -16,6 +16,7 @@ public:
 	virtual void update_mouse_screen(float x, float y);
 	virtual void update_mouse_curve(float x, float y);
 	virtual bool is_complete();
+	virtual void transform_change(const transformation& curve_to_screen);
 	virtual ~tool_base();
 
 	struct rprops

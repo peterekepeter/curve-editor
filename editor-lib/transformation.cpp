@@ -16,17 +16,27 @@ transformation transformation::inverse() const
 	};
 }
 
-float transformation::apply_x(float in) const
+float transformation::apply_x(float in_x) const
 {
-	return in * scale_x + translate_x;
+	return apply_scaling_x(in_x) + translate_x;
 }
 
-float transformation::apply_y(float in) const
+float transformation::apply_y(float in_y) const
 {
-	return in * scale_y + translate_y;
+	return apply_scaling_y(in_y) + translate_y;
 }
 
 point transformation::apply(point in) const
 {
 	return point{ apply_x(in.x), apply_y(in.y) };
+}
+
+float transformation::apply_scaling_x(float in_x) const
+{
+	return in_x * scale_x;
+}
+
+float transformation::apply_scaling_y(float in_y) const
+{
+	return in_y * scale_y;
 }

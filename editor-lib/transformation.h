@@ -15,5 +15,9 @@ struct transformation
 	float apply_y(float) const;
 
 	point apply(point) const;
+
+	float apply_scaling_x(float) const;
+
+	float apply_scaling_y(float) const;
 };
 

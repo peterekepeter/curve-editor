@@ -14,6 +14,7 @@ class tool_edit : public tool_base
 	curve_editor::nearest_result target;
 	curve_editor editor;
 	bool mouse_l_state = false;
+	transformation curve_to_screen;
 
 public:
 
@@ -22,6 +23,7 @@ public:
 	virtual void mouse_l_press() override;
 	virtual void mouse_l_release() override;
 	virtual void update_mouse_curve(float, float) override;
+	virtual void transform_change(const transformation& curve_to_screen) override;
 	virtual bool is_complete() override;
 
 
