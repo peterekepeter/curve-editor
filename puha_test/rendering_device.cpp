@@ -25,3 +25,8 @@ void rendering_device::draw_vertical_line(int x, int color)
 {
 	gfx.CreateViewport().VLine(x, 0, x, gfx.Height, color);
 }
+
+void rendering_device::draw_rect(int x, int y, int w, int h, int color)
+{
+	gfx.CreateViewport().RectFill(x, y, w, h, color);
+}

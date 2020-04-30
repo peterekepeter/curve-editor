@@ -158,10 +158,9 @@ void Gfx320x200::RectangleFilled(int x1, int y1, int x2, int y2, int color)
 	for (int i = y1; i <= y2; i++) Span(x1, i, w, color);
 }
 
-void Gfx320x200::RectFill(int x1, int y1, int x2, int y2, int color)
+void Gfx320x200::RectFill(int x1, int y1, int w, int h, int color)
 {
-	int w = x2 - x1;
-	for (int i = y1; i <= y2; i++) Span(x1, i, w, color);
+	for (int i = 0; i < h; i++) Span(x1, y1+i, w, color);
 }
 
 void Gfx320x200::Line(int x1, int y1, int x2, int y2, int color)

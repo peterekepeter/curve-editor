@@ -15,4 +15,5 @@ public:
 	int get_height();
 	void clear(int color);
 	void draw_vertical_line(int x, int color);
+	void draw_rect(int x, int y, int w, int h, int color);
 };

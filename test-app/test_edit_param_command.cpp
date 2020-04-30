@@ -47,7 +47,7 @@ namespace test_commands
 			auto& curve = document.curve_list[0];
 			curve.split(0.0);
 			curve.split(1.0);
-			auto& segment = curve.find_segment(0.5);
+			auto& segment = curve.find_segment_ref(0.5);
 			segment.params = { 0.0f, 1.0f, 1.0f, 0.0f };
 			return document;
 		}

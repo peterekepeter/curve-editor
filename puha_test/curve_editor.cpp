@@ -63,7 +63,7 @@ curve_editor::nearest_result
 curve_editor::get_nearest_edit_control(float x, float y, const transformation& curve_to_screen)
 {
 	auto& curve = document.curve_list[curve_index];
-	auto nearest_segment = curve.get_segment(x);
+	auto nearest_segment = curve.find_segment(x);
 	auto param_index = get_nearest_param_index(nearest_segment, x);
 	
 	float bias_towards_param_pixels = 8;
@@ -141,7 +141,7 @@ void curve_editor::remove_zero_length_segments()
 void curve_editor::change_param_count(int segmentDataAdd, float x)
 {
 	auto& curve = document.curve_list[curve_index];
-	auto target = curve.get_segment(x);
+	auto target = curve.find_segment(x);
 	auto segment_param_count = target.segment.params.size();
 	if (segmentDataAdd != 0) {
 		segment_param_count += segmentDataAdd;

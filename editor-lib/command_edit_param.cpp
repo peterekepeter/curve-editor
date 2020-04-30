@@ -30,7 +30,7 @@ void commands::edit_param::revert()
 float& commands::edit_param::get_param_ref()
 {
 	auto& curve = get_selected_curve();
-	auto& segment = curve.get_segment_by_index(
+	auto& segment = curve.get_segment_ref_by_index(
 		segment_index);
 	return segment.params[param_index];
 }

@@ -44,7 +44,7 @@ void commands::edit_separator::execute()
 	curve.set_separator_value(index, value);
 	if (remove) {
 		// todo cleanup ops
-		removed_segment = curve.get_segment_by_index(
+		removed_segment = curve.get_segment_ref_by_index(
 			remove_at_index);
 		curve.remove_split(remove_at_index);
 		did_remove = true;
@@ -60,7 +60,7 @@ void commands::edit_separator::revert()
 	}
 	else {
 		curve.split(x_from);
-		auto result = curve.get_segment((x_from + x_to) / 2);
+		auto result = curve.find_segment((x_from + x_to) / 2);
 		result.segment = removed_segment;
 	}
 }

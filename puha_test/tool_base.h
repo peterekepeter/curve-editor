@@ -2,6 +2,7 @@
 #include "../editor-lib/command_base.h"
 #include "../editor-lib/transformation.h"
 #include "../puha-render/puha-render.h"
+#include "./renderer.h"
 
 
 class tool_base
@@ -26,4 +27,5 @@ public:
 	};
 
 	virtual void render(Gfx320x200& gfx, const rprops& props);
+	virtual void render(renderer& render);
 };

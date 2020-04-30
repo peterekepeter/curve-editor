@@ -13,18 +13,21 @@ struct curve
 
 	index_t split(time_t time);
 
-	segment& find_segment(time_t time);
-	segment_with_separators<time_t> get_segment(time_t time);
+	// search aglorithms
+	segment& find_segment_ref(time_t);
+	segment_with_separators<time_t> find_segment(time_t);
+	index_t find_segment_index(time_t) const;
+	index_t find_separator_index(time_t) const;
 
-	index_t find_segment_index(time_t time) const;
-	index_t find_separator_index(time_t time) const;
-	void remove_split(index_t index);
 	void remove_zero_length_segments();
-	segment& get_segment_by_index(index_t index);
+	segment& get_segment_ref_by_index(index_t segment_index);
+	segment_with_separators<time_t> get_segment_by_index(index_t segment_index);
 
-	const segment& get_segment_by_index(index_t index) const;
+	const segment& get_segment_ref_by_index(index_t index) const;
+	const segment_with_separators_c<time_t> get_segment_by_index(index_t index) const;
 	float eval(time_t time);
 
+	void remove_split(index_t separator_index);
 	time_t get_separator_value(index_t index) const;
 	void set_separator_value(index_t index, time_t value);
 	size_t get_separator_count() const;

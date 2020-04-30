@@ -25,6 +25,7 @@ public:
 	virtual void update_mouse_curve(float x, float y) override;
 	virtual void update_mouse_screen(float x, float y) override;
 	virtual bool is_complete() override;
+	virtual void render(renderer& render) override;
 
 	// Inherited via tool_base
 	virtual command_ptr get_command() override;

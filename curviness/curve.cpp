@@ -91,8 +91,8 @@ void curve::remove_split(index_t index)
 	separators.erase(separators.begin() + index);
 }
 
-segment& curve::find_segment(time_t time) {
-	return get_segment_by_index(find_segment_index(time));
+segment& curve::find_segment_ref(time_t time) {
+	return get_segment_ref_by_index(find_segment_index(time));
 }
 
 void curve::remove_zero_length_segments()
@@ -112,19 +112,13 @@ void curve::remove_zero_length_segments()
 	}
 }
 
-segment& curve::get_segment_by_index(curve::index_t index)
+segment& curve::get_segment_ref_by_index(curve::index_t index)
 {
 	return this->segments[index];
 }
 
-const segment& curve::get_segment_by_index(curve::index_t index) const
+segment_with_separators<curve::time_t> curve::get_segment_by_index(index_t segment_index)
 {
-	return this->segments[index];
-}
-
-segment_with_separators<curve::time_t> curve::get_segment(curve::time_t time)
-{
-	auto segment_index = find_segment_index(time);
 	auto separators_count = separators.size();
 
 	auto before_index = segment_index - 1;
@@ -138,23 +132,63 @@ segment_with_separators<curve::time_t> curve::get_segment(curve::time_t time)
 
 	time_t sep_after = +INFINITY;
 	if (0 <= after_index && after_index < separators_count)
-	{ 
+	{
 		sep_after = separators[after_index];
 	}
 
-	auto& segment = get_segment_by_index(segment_index);
-	return segment_with_separators<time_t>
-	{ 
-		sep_before, 
-		sep_after, 
-		segment, 
+	auto& segment = get_segment_ref_by_index(segment_index);
+	return segment_with_separators<curve::time_t>
+	{
+		sep_before,
+		sep_after,
+		segment,
 		segment_index
 	};
 }
 
+const segment& curve::get_segment_ref_by_index(curve::index_t index) const
+{
+	return this->segments[index];
+}
+
+const segment_with_separators_c<curve::time_t> curve::get_segment_by_index(index_t segment_index) const
+{
+	auto separators_count = separators.size();
+
+	auto before_index = segment_index - 1;
+	auto after_index = segment_index;
+
+	time_t sep_before = -INFINITY;
+	if (0 <= before_index && before_index < separators_count)
+	{
+		sep_before = separators[before_index];
+	}
+
+	time_t sep_after = +INFINITY;
+	if (0 <= after_index && after_index < separators_count)
+	{
+		sep_after = separators[after_index];
+	}
+
+	auto& segment = get_segment_ref_by_index(segment_index);
+	return segment_with_separators_c<curve::time_t>
+	{
+		sep_before,
+		sep_after,
+		segment,
+		segment_index
+	};
+}
+
+segment_with_separators<curve::time_t> curve::find_segment(curve::time_t time)
+{
+	auto segment_index = find_segment_index(time);
+	return get_segment_by_index(segment_index);
+}
+
 float curve::eval(time_t time)
 {
-	return this->get_segment(time).eval(time);
+	return this->find_segment(time).eval(time);
 }
 
 

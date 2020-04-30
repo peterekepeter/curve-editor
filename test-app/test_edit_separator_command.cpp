@@ -146,7 +146,7 @@ namespace test_commands
 
 		document_model document_with_2_splits() {
 			auto document = document_with_splits({1.0, 2.0});
-			auto& middle = document.curve_list[0].find_segment(1.5);
+			auto& middle = document.curve_list[0].find_segment_ref(1.5);
 			middle.params[0] = 1.0f;
 			return document;
 		}

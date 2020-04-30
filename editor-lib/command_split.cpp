@@ -12,7 +12,7 @@ void commands::split::execute()
 	
 	// before splitting save segment
 	// in case it needs to be reverted
-	auto result = curve.get_segment(curve_x);
+	auto result = curve.find_segment(curve_x);
 	original_segment = result.segment;
 
 	curve.split(curve_x);
@@ -25,6 +25,6 @@ void commands::split::revert()
 	curve.remove_split(index);
 
 	// restore the original segment
-	auto result = curve.get_segment(curve_x);
+	auto result = curve.find_segment(curve_x);
 	result.segment = original_segment;
 }

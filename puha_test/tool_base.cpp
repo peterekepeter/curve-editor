@@ -38,3 +38,7 @@ void tool_base::render(Gfx320x200& gfx, const rprops& props)
 {
 
 }
+
+void tool_base::render(renderer& render)
+{
+}

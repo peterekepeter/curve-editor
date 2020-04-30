@@ -59,14 +59,14 @@ namespace curviness_test
 			curve curve;
 			curve.split(10);
 			curve.split(20);
-			auto& segment = curve.get_segment_by_index(curve.find_segment_index(15));
+			auto& segment = curve.get_segment_ref_by_index(curve.find_segment_index(15));
 		}
 
 		TEST_METHOD(can_get_segment_by_time) {
 			curve curve; curve.split(10);
-			auto& segment = curve.find_segment(11);
+			auto& segment = curve.find_segment_ref(11);
 			segment.algorithm = algorithms::generalized_bezier;
-			auto& segment2 = curve.find_segment(12);
+			auto& segment2 = curve.find_segment_ref(12);
 			Assert::IsTrue(segment2.algorithm == algorithms::generalized_bezier);
 		}
 
@@ -77,7 +77,7 @@ namespace curviness_test
 
 		TEST_METHOD(curve_starts_with_constant_value_segment) {
 			curve curve;
-			auto& segment = curve.find_segment(0);
+			auto& segment = curve.find_segment_ref(0);
 			Assert::AreEqual(0.0f, segment.eval(0.0f));
 		}
 
@@ -102,7 +102,7 @@ namespace curviness_test
 			curve curve;
 			curve.split(10);
 			curve.split(20);
-			auto& segment = curve.find_segment(15);
+			auto& segment = curve.find_segment_ref(15);
 			segment.params = { 2.0f, 3.0f };
 			Assert::AreEqual(2.5f, curve.eval(15));
 		}

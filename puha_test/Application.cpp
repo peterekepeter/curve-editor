@@ -33,13 +33,13 @@ static void init_curve(curve& c) {
 	c.split(-.4f);
 	c.split(.7f);
 	c.split(1.9f);
-	auto& seg0 = c.find_segment(-.5f);
+	auto& seg0 = c.find_segment_ref(-.5f);
 	seg0.params.resize(1);
 	seg0.params[0] = -.5f;
-	auto& seg1 = c.find_segment(.5f);
+	auto& seg1 = c.find_segment_ref(.5f);
 	seg1.params.resize(1);
 	seg1.params[0] = -.5f;
-	auto& seg2 = c.find_segment(.8f);
+	auto& seg2 = c.find_segment_ref(.8f);
 	seg2.params.resize(8);
 	seg2.params[1] = +.5f;
 }
@@ -170,6 +170,7 @@ void Application::DoRenderingWork()
 				screen_to_curve
 		};
 		tool_instance->render(gfx, props);
+		tool_instance->render(render);
 	}
 
 	//bool is_hover = false, is_active = false;
