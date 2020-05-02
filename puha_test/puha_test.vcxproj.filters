@@ -16,13 +16,19 @@
     <Filter Include="Header Files\Tools">
       <UniqueIdentifier>{01dc233d-d24c-4e77-b053-68e648386965}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\tools">
-      <UniqueIdentifier>{2d663bf5-4e32-49b5-9757-403faf42b8b2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Tools\Edit">
       <UniqueIdentifier>{6d383b3c-8063-4f87-99e4-a3d2035aa94b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\tools\Edit">
+    <Filter Include="Header Files\Export">
+      <UniqueIdentifier>{0bac0b02-c701-466d-98e4-e1070ad1cdeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Export">
+      <UniqueIdentifier>{aaecb9bc-1e42-4e06-8099-7c94d3a9e8e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tools">
+      <UniqueIdentifier>{2d663bf5-4e32-49b5-9757-403faf42b8b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tools\Edit">
       <UniqueIdentifier>{5b226a89-f04f-4e87-94d2-4c54b0b2ef9e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -69,6 +75,9 @@
     <ClInclude Include="theme.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="code_generator.h">
+      <Filter>Header Files\Export</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -81,28 +90,28 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tool_split.cpp">
-      <Filter>Source Files\tools</Filter>
+      <Filter>Source Files\Tools</Filter>
     </ClCompile>
     <ClCompile Include="tool_base.cpp">
-      <Filter>Source Files\tools</Filter>
+      <Filter>Source Files\Tools</Filter>
     </ClCompile>
     <ClCompile Include="tool_edit.cpp">
-      <Filter>Source Files\tools</Filter>
+      <Filter>Source Files\Tools</Filter>
     </ClCompile>
     <ClCompile Include="edit_control_separator.cpp">
-      <Filter>Source Files\tools\Edit</Filter>
+      <Filter>Source Files\Tools\Edit</Filter>
     </ClCompile>
     <ClCompile Include="edit_control_y_param.cpp">
-      <Filter>Source Files\tools\Edit</Filter>
+      <Filter>Source Files\Tools\Edit</Filter>
     </ClCompile>
     <ClCompile Include="edit_control.cpp">
-      <Filter>Source Files\tools\Edit</Filter>
+      <Filter>Source Files\Tools\Edit</Filter>
     </ClCompile>
     <ClCompile Include="curve_editor.cpp">
-      <Filter>Source Files\tools\Edit</Filter>
+      <Filter>Source Files\Tools\Edit</Filter>
     </ClCompile>
     <ClCompile Include="tool_param_count.cpp">
-      <Filter>Source Files\tools</Filter>
+      <Filter>Source Files\Tools</Filter>
     </ClCompile>
     <ClCompile Include="rendering_device.cpp">
       <Filter>Source Files</Filter>
@@ -112,6 +121,9 @@
     </ClCompile>
     <ClCompile Include="theme.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="code_generator.cpp">
+      <Filter>Source Files\Export</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

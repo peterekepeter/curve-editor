@@ -66,4 +66,5 @@ public:
 	void Undo();
 	void Redo();
 	void ChangeParamCount();
+	std::string Export();
 };

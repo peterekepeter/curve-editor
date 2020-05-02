@@ -7,6 +7,7 @@
 #include "./tool_split.h"
 #include "./tool_edit.h"
 #include "./tool_param_count.h"
+#include "./code_generator.h"
 
 static void init_curve(curve& c);
 
@@ -30,18 +31,17 @@ void Application::ThreadMethod()
 }
 
 static void init_curve(curve& c) {
-	c.split(-.4f);
-	c.split(.7f);
-	c.split(1.9f);
+	c.split(-1.0f);
+	c.split(.0f);
+	c.split(1.0f);
 	auto& seg0 = c.find_segment_ref(-.5f);
-	seg0.params.resize(1);
-	seg0.params[0] = -.5f;
+	seg0.params.resize(2);
+	seg0.params[0] = 0.0f;
+	seg0.params[1] = 1.0f;
 	auto& seg1 = c.find_segment_ref(.5f);
-	seg1.params.resize(1);
-	seg1.params[0] = -.5f;
-	auto& seg2 = c.find_segment_ref(.8f);
-	seg2.params.resize(8);
-	seg2.params[1] = +.5f;
+	seg1.params.resize(2);
+	seg1.params[0] = 1.0f;
+	seg1.params[1] = 0.0f;
 }
 
 bool Application::DoWork()
@@ -330,4 +330,11 @@ void Application::ChangeParamCount()
 		tool_instance->update_mouse_screen(
 			mouse_x, mouse_y);
 	});
+}
+
+std::string Application::Export()
+{
+	size_t curve_index = the_curve_editor.curve_index;
+	auto& curve = editor.document.curve_list[curve_index];
+	return code_generator::generate_c_like(curve);
 }
