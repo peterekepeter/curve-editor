@@ -62,3 +62,7 @@ void edit_control::render(Gfx320x200& gfx, const rprops& props)
 		gfx.SetColor(0xff0000);
 	}
 }
+
+void edit_control::render(renderer& renderer)
+{
+}

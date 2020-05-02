@@ -69,3 +69,10 @@ void tool_edit::render(Gfx320x200& gfx, const rprops& props)
 			});
 	}
 }
+
+void tool_edit::render(renderer& render)
+{
+	if (target.control) {
+		target.control->render(render);
+	}
+}

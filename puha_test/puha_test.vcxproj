@@ -154,6 +154,7 @@
     <ClInclude Include="edit_control_y_param.h" />
     <ClInclude Include="rendering_device.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="theme.h" />
     <ClInclude Include="tool_edit.h" />
     <ClInclude Include="tool_param_count.h" />
     <ClInclude Include="tool_split.h" />
@@ -170,6 +171,7 @@
     <ClCompile Include="edit_control_separator.cpp" />
     <ClCompile Include="edit_control_y_param.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="theme.cpp" />
     <ClCompile Include="tool_edit.cpp" />
     <ClCompile Include="tool_param_count.cpp" />
     <ClCompile Include="tool_split.cpp" />

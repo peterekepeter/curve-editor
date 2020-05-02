@@ -30,5 +30,6 @@ public:
 	// Inherited via tool_base
 	virtual command_ptr get_command() override;
 	virtual void render(Gfx320x200& gfx, const rprops& props) override;
+	virtual void render(renderer& render) override;
 
 };
