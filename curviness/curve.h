@@ -16,6 +16,7 @@ struct curve
 	// search aglorithms
 	segment& find_segment_ref(time_t);
 	segment_with_separators<time_t> find_segment(time_t);
+	segment_with_separators_c<time_t> find_segment(time_t) const;
 	index_t find_segment_index(time_t) const;
 	index_t find_separator_index(time_t) const;
 
@@ -25,7 +26,7 @@ struct curve
 
 	const segment& get_segment_ref_by_index(index_t index) const;
 	const segment_with_separators_c<time_t> get_segment_by_index(index_t index) const;
-	float eval(time_t time);
+	float eval(time_t time) const;
 
 	void remove_split(index_t separator_index);
 	time_t get_separator_value(index_t index) const;

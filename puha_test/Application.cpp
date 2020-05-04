@@ -15,8 +15,10 @@ void Application::ThreadMethod()
 {
 	// init code
 	editor.document.curve_list.emplace_back();
+	editor.document.curve_list.emplace_back();
 	auto& the_curve = editor.document.curve_list[0];
 	init_curve(the_curve);
+	init_curve(editor.document.curve_list[1]);
 	curve_to_screen = transformation{ 50, -100, 160, 100 };
 	screen_to_curve = curve_to_screen.inverse();
 	
@@ -153,15 +155,26 @@ void Application::DoRenderingWork()
 	if (curve_index >= 0 
 		&& curve_index < editor.document.curve_list.size()) {
 		auto& selected_curve = editor.document.curve_list[curve_index];
-		render.separator_lines(selected_curve, 0x222222);
+		render.render_separator_lines(selected_curve, 0x222222);
 	}
 
-	the_curve_editor.render(gfx, 
-		curve_editor::rprops{
-			curve_to_screen,
-			screen_to_curve
+	int colors[] = { 0x88ff4422, 0x882288ff };
+	for (int i = 0; i < editor.document.curve_list.size(); i++) {
+		if (the_curve_editor.curve_index == i) {
+			continue;
 		}
-	);
+		int color = colors[i%2];
+		auto& curve = editor.document.curve_list[i];
+		render.render_curve(curve, color);
+	}
+
+	if (the_curve_editor.curve_index >= 0) {
+		int i = the_curve_editor.curve_index;
+		int color = colors[i % 2];
+		auto& curve = editor.document.curve_list[i];
+		color |= 0xaa000000; // increase alpha
+		render.render_curve(curve, color);
+	}
 
 	if (tool_active && tool_instance) {
 		const auto props =
@@ -172,31 +185,6 @@ void Application::DoRenderingWork()
 		tool_instance->render(gfx, props);
 		tool_instance->render(render);
 	}
-
-	//bool is_hover = false, is_active = false;
-	//if (tool_edit_active) {
-	//	if (mouse_l) {
-	//		is_active = true;
-	//	}
-	//	else {
-	//		is_hover = true;
-	//	}
-	//}
-
-	//if (is_active || is_hover)
-	//{
-	//	if (target.control)
-	//	{
-	//		target.control->render(gfx, edit_control::rprops
-	//			{
-	//				curve_to_screen,
-	//				screen_to_curve,
-	//				is_hover,
-	//				is_active
-	//			}
-	//		);
-	//	}
-	//}
 
 	if (!gfx.AreBoundsValid()) {
 		throw "oh crap!";
@@ -293,12 +281,12 @@ void Application::SetRedrawHandler(std::function<void()> handler)
 	signal.notify_all();
 }
 
-void Application::SplitCurve()
+void Application::ActivateSplitTool()
 {
 	defer([this] {
 		tool_active = true;
 		tool_instance = std::make_unique<tool_split>(
-			editor.document, 0);
+			editor.document, the_curve_editor.curve_index);
 		tool_instance->update_mouse_curve(
 			mouse_curve_x, mouse_curve_y);
 		tool_instance->update_mouse_screen(
@@ -306,12 +294,12 @@ void Application::SplitCurve()
 	});
 }
 
-void Application::ToggleEditMode()
+void Application::ActivateEditTool()
 {
 	defer([this] {
 		tool_active = true;
 		tool_instance = std::make_unique<tool_edit>(
-			editor.document, 0);
+			editor.document, the_curve_editor.curve_index);
 		tool_instance->update_mouse_curve(
 			mouse_curve_x, mouse_curve_y);
 		tool_instance->update_mouse_screen(
@@ -319,12 +307,12 @@ void Application::ToggleEditMode()
 	});
 }
 
-void Application::ChangeParamCount() 
+void Application::ActivateChangeParamCount() 
 {
 	defer([this] {
 		tool_active = true;
 		tool_instance = std::make_unique<tool_param_count>(
-			editor.document, 0);
+			editor.document, the_curve_editor.curve_index);
 		tool_instance->update_mouse_curve(
 			mouse_curve_x, mouse_curve_y);
 		tool_instance->update_mouse_screen(
@@ -337,4 +325,14 @@ std::string Application::Export()
 	size_t curve_index = the_curve_editor.curve_index;
 	auto& curve = editor.document.curve_list[curve_index];
 	return code_generator::generate_c_like(curve);
+}
+
+void Application::SwitchSelectedCurve()
+{
+	defer([this] {
+		the_curve_editor.curve_index++;
+		if (the_curve_editor.curve_index >= editor.document.curve_list.size()) {
+			the_curve_editor.curve_index = 0;
+		}
+	});
 }

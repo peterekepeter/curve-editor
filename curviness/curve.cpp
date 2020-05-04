@@ -186,11 +186,16 @@ segment_with_separators<curve::time_t> curve::find_segment(curve::time_t time)
 	return get_segment_by_index(segment_index);
 }
 
-float curve::eval(time_t time)
+segment_with_separators_c<curve::time_t> curve::find_segment(curve::time_t time) const
+{
+	auto segment_index = find_segment_index(time);
+	return get_segment_by_index(segment_index);
+}
+
+float curve::eval(time_t time) const
 {
 	return this->find_segment(time).eval(time);
 }
-
 
 curve::time_t curve::get_separator_value(index_t index) const
 {

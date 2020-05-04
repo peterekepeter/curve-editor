@@ -16,4 +16,5 @@ public:
 	void clear(int color);
 	void draw_vertical_line(int x, int color);
 	void draw_rect(int x, int y, int w, int h, int color);
+	void unsafe_blend_pixel(int x, int y, int color);
 };

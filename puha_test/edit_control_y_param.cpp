@@ -20,7 +20,7 @@ edit_control_y_param::edit_control_y_param(
 void edit_control_y_param::render(renderer& renderer)
 {
 	auto& curve = document.curve_list[curve_index];
-	renderer.param_dot(
+	renderer.render_param_dot(
 		curve, 
 		target.segment_index,
 		param_index, 

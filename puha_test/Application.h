@@ -53,18 +53,19 @@ public:
 	Application(Gfx320x200& gfx);
 	~Application();
 
-	void ToggleEditMode();
+	void ActivateEditTool();
+	void ActivateSplitTool();
+	void ActivateChangeParamCount();
 
 	void ShiftView(int amount);
 	void UpdateLeftButton(bool pressed);
 	void CancelCurrentEdit();
 	void UpdateMousePos(int x, int y);
 	void SetRedrawHandler(std::function<void()> handler);
-	void SplitCurve();
 	void ZoomIn();
 	void ZoomOut();
 	void Undo();
 	void Redo();
-	void ChangeParamCount();
 	std::string Export();
+	void SwitchSelectedCurve();
 };

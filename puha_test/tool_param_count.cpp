@@ -51,7 +51,7 @@ bool tool_param_count::is_complete()
 void tool_param_count::render(renderer& render)
 {
 	auto& curve = document.curve_list[curve_index];
-	render.param_dots(curve, segment_index, 0xffffff);
+	render.render_param_dots(curve, segment_index, 0xffffff);
 }
 
 using std::vector;

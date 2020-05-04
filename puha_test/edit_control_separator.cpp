@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "./edit_control_separator.h"
 #include "../editor-lib/command_edit_separator.h"
+#include "./theme.h"
 
 edit_control_separator::edit_control_separator(
 	document_model& document,
@@ -33,7 +34,7 @@ void edit_control_separator::render(Gfx320x200& gfx, const rprops& props)
 	auto screen_height = gfx.Height;
 	auto x = props.curve_to_screen.apply_x(curve_x);
 	if (0 <= x && x < screen_width) {
-		gfx.Line(x, 0, x , screen_height - 1);
+		gfx.Line(x, 0, x , screen_height - 1, theme::active_color);
 	}
 }
 
