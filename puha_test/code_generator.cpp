@@ -13,20 +13,37 @@ static void generate_segment(
 	const curve& curve,
 	size_t segment_index); // forward
 
-std::string code_generator::generate_c_like(const curve& curve)
+static void generate_c_like_curve(
+	size_t curve_index,
+	std::stringstream& out,
+	const curve& curve); // forward;
+
+std::string code_generator::generate_c_like(const document_model& document)
+{
+	std::stringstream out;
+	for (size_t i = 0; i < document.curve_list.size(); i++) {
+		auto& curve = document.curve_list[i];
+		generate_c_like_curve(i, out, curve);
+		out << "\n";
+	}
+	return out.str();
+}
+
+static void generate_c_like_curve(
+	size_t curve_index, 
+	std::stringstream& out, 
+	const curve& curve)
 {
 	auto segment_count = curve.get_separator_count() + 1;
-	std::stringstream out;
 	const auto out_type = "float";
 	const auto in_type = "float";
 	const auto fn_name = "untitled";
-	out << out_type << " " << fn_name;
+	out << out_type << " " << fn_name << curve_index;
 	out << "(" << in_type << " x) { return ";
 
 	generate_divide(out, curve, 0, segment_count - 1);
 
 	out << "; }";
-	return out.str();
 }
 
 static void generate_divide(

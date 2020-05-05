@@ -322,9 +322,7 @@ void Application::ActivateChangeParamCount()
 
 std::string Application::Export()
 {
-	size_t curve_index = the_curve_editor.curve_index;
-	auto& curve = editor.document.curve_list[curve_index];
-	return code_generator::generate_c_like(curve);
+	return code_generator::generate_c_like(editor.document);
 }
 
 void Application::SwitchSelectedCurve()
