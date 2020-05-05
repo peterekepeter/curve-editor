@@ -40,11 +40,6 @@ void renderer::render_curve(const curve& curve, int color)
 
 	// rendering props
 	const int max_samples = 5;
-	const int add_val_r = 2 * 64 / max_samples;
-	const int add_val_g = 2 * 160 / max_samples;
-	const int add_val_b = 2 * 255 / max_samples;
-	// render
-
 	float inv_sub_max = 1.0f / max_samples;
 
 	float t = 0;
