@@ -40,7 +40,8 @@ void edit_control_separator::render(Gfx320x200& gfx, const rprops& props)
 
 tool_base::command_ptr edit_control_separator::get_command(
 	float x_from, float y_from, 
-	float x_to, float y_to)
+	float x_to, float y_to,
+	float snap_threshold)
 {
 	double original_value = the_curve.get_separator_value(separator_index);
 	return std::make_unique<commands::edit_separator>(

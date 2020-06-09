@@ -51,8 +51,9 @@ tool_base::command_ptr tool_edit::get_command()
 {
 	if (mouse_l_state || complete)
 	{
+		float snap_threshold = abs(8.0f / curve_to_screen.scale_y);
 		return target.control->get_command(
-			x_from, y_from, x_to, y_to);
+			x_from, y_from, x_to, y_to, snap_threshold);
 	}
 	else {
 		return std::unique_ptr<commands::base>();

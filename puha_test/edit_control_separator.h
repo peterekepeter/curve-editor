@@ -19,7 +19,8 @@ public:
 
 	virtual tool_base::command_ptr get_command(
 		float x_from, float y_from,
-		float x_to, float y_to) override;
+		float x_to, float y_to,
+		float snap_threshold) override;
 
 private:
 

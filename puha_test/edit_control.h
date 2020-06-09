@@ -29,7 +29,8 @@ public:
 		float x_from, 
 		float y_from,
 		float x_to, 
-		float y_to) = 0;
+		float y_to,
+		float snap_threshold) = 0;
 
 	struct rprops
 	{

@@ -32,11 +32,51 @@ float edit_control_y_param::get_edit_sensitivity()
 	return 1.0f;
 }
 
-tool_base::command_ptr edit_control_y_param::get_command(float x_from, float y_from, float x_to, float y_to)
+tool_base::command_ptr edit_control_y_param::get_command(
+	float x_from, float y_from, 
+	float x_to, float y_to,
+	float snap_threshold)
 {
 	float original_y = target.segment.params[param_index];
 	auto new_value = original_y + (y_to - y_from) 
 		* get_edit_sensitivity();
+
+	float snap_distance = 1e9;
+	float snap_value = 0;
+	// snap logic
+	{
+
+		auto& curve = document.curve_list[curve_index];
+
+		if (target.segment.algorithm == algorithms::generalized_bezier) {
+			if (param_index == 0 
+				&& target.segment_index > 0) 
+			{
+				auto prev = curve.get_segment_by_index(target.segment_index - 1);
+				auto value = prev.eval(target.left);
+				auto distance = abs(new_value - value);
+				if (distance < snap_distance) {
+					snap_value = value;
+					snap_distance = distance;
+				}
+			}
+			if (param_index == target.segment.params.size() - 1 
+				&& target.segment_index < curve.get_separator_count()) 
+			{
+				auto next = curve.get_segment_by_index(target.segment_index + 1);
+				auto value = next.eval(target.right);
+				auto distance = abs(new_value - value);
+				if (distance < snap_distance) {
+					snap_value = value;
+					snap_distance = distance;
+				}
+			}
+		}
+	}
+
+	if (snap_distance <= snap_threshold) {
+		new_value = snap_value;
+	}
 
 	return std::make_unique<commands::edit_param>(
 		document, 
