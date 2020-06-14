@@ -12,8 +12,8 @@ struct segment
 
 	std::vector<float> params = { .0f };
 
-	float(*algorithm)(float, const float* params, size_t count) 
-		= algorithms::generalized_bezier;
+	using algorithm_t = float(*)(float, const float* params, size_t count);
+	algorithm_t algorithm = algorithms::generalized_bezier;
 };
 
 template<class min_t, class time_t, class max_t>

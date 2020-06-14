@@ -10,6 +10,7 @@ public:
 	bool undo();
 	bool redo();
 	void commit(std::unique_ptr<commands::base> cmd);
+	void clear();
 
 private:
 	std::vector<std::unique_ptr<commands::base>> history;

@@ -32,6 +32,7 @@ struct curve
 	time_t get_separator_value(index_t index) const;
 	void set_separator_value(index_t index, time_t value);
 	size_t get_separator_count() const;
+	size_t get_segment_count() const { return segments.size(); }
 
 private:
 

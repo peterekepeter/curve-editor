@@ -2,6 +2,7 @@
 #include <queue>
 #include <functional>
 #include <mutex>
+#include <sstream>
 #include "../curviness/curviness.h"
 #include "./curve_editor.h"
 #include "../editor-lib/transformation.h"
@@ -10,6 +11,7 @@
 #include "./tool_base.h"
 #include "./rendering_device.h"
 #include "./renderer.h"
+#include "../editor-lib/io_binary.h"
 
 class Application
 {
@@ -66,6 +68,8 @@ public:
 	void ZoomOut();
 	void Undo();
 	void Redo();
-	std::string Export();
+	std::string ExportCode();
+	std::string ExportBinary();
+	void ImportBinary(const std::string&);
 	void SwitchSelectedCurve();
 };

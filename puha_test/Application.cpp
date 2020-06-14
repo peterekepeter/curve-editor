@@ -320,9 +320,26 @@ void Application::ActivateChangeParamCount()
 	});
 }
 
-std::string Application::Export()
+std::string Application::ExportCode()
 {
 	return code_generator::generate_c_like(editor.document);
+}
+
+std::string Application::ExportBinary()
+{
+	std::stringstream ss;
+	io_binary::write(ss, editor.document);
+	return ss.str();
+}
+
+void Application::ImportBinary(const std::string& in_binary)
+{
+	std::string binary_copy = in_binary;
+	defer([this, binary_copy] {
+		std::stringstream ss(binary_copy);
+		io_binary::read(ss, editor.document);
+		this->editor.history.clear();
+	});
 }
 
 void Application::SwitchSelectedCurve()

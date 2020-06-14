@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="io_binary.h" />
     <ClInclude Include="command_base.h" />
     <ClInclude Include="command_curve_base.h" />
     <ClInclude Include="command_edit_param.h" />
@@ -40,6 +41,7 @@
     <ClCompile Include="command_change_segment.cpp" />
     <ClCompile Include="command_split.cpp" />
     <ClCompile Include="editor_history.cpp" />
+    <ClCompile Include="io_binary.cpp" />
     <ClCompile Include="transformation.cpp" />
   </ItemGroup>
   <ItemGroup>
