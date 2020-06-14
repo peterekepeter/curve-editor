@@ -65,6 +65,11 @@ bool Application::DoWork()
 	float curve_dy = screen_to_curve.scale_y * delta_y;
 	bool did_move = (delta_x != 0 || delta_y != 0);
 
+	if (mouse_l_pressed) {
+		mouse_press_x = mouse_x;
+		mouse_press_y = mouse_y;
+	}
+
 	if (preview_command) {
 		preview_command->undo();	
 		preview_command.reset();
@@ -105,6 +110,11 @@ bool Application::DoWork()
 			curve_to_screen.translate_y += delta_y;
 			screen_to_curve = curve_to_screen.inverse();
 		}
+		if (mouse_l_released
+			&& mouse_press_x == mouse_x
+			&& mouse_press_y == mouse_y) {
+			select_nearest_curve(mouse_x, mouse_y);
+		}
 	}
 
 	// consume state
@@ -137,6 +147,28 @@ void Application::execute_work_items()
 		work_items_mutex.lock();
 	}
 	work_items_mutex.unlock();
+}
+
+void Application::select_nearest_curve(int x, int y)
+{
+	const float max_select_threshold_pixels = 16.0;
+	size_t best_index = -1;
+	auto best_distance = max_select_threshold_pixels;
+	for (size_t i = 0; i < editor.document.curve_list.size(); i++) {
+		if (i == the_curve_editor.curve_index) {
+
+		}
+		auto curve_x = screen_to_curve.apply_x(x);
+		auto curve_y = screen_to_curve.apply_y(y);
+		auto curve_y_value = editor.document.curve_list[i].eval(curve_x);
+		auto curve_distance_y = curve_y_value - curve_y;
+		auto screen_distance = abs(curve_to_screen.apply_scaling_y(curve_distance_y));
+		if (screen_distance < best_distance) {
+			best_distance = screen_distance;
+			best_index = i;
+		}
+	}
+	the_curve_editor.curve_index = best_index;
 }
 
 void Application::DoRenderingWork()

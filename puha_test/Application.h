@@ -36,6 +36,7 @@ class Application
 
 	int mouse_x = 0, mouse_y = 0;
 	int last_mouse_x = 0, last_mouse_y = 0;
+	int mouse_press_x = 0, mouse_press_y = 0;
 	float mouse_curve_x, mouse_curve_y;
 
 	transformation curve_to_screen;
@@ -48,6 +49,7 @@ class Application
 
 	void defer(std::function<void()>);
 	void execute_work_items();
+	void select_nearest_curve(int x, int y);
 
 	// should be last
 	std::thread app_thread;
