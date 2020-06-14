@@ -39,6 +39,9 @@
     <ClCompile Include="test_binary_io.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test_add_curve_command.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">

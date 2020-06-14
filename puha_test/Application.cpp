@@ -4,6 +4,7 @@
 #include "../curviness/curviness.h"
 #include "../editor-lib/editor_math.h"
 #include "../editor-lib/command_split.h"
+#include "../editor-lib/command_add_curve.h"
 #include "./tool_split.h"
 #include "./tool_edit.h"
 #include "./tool_param_count.h"
@@ -171,7 +172,7 @@ void Application::DoRenderingWork()
 		render.render_curve(curve, color);
 	}
 
-	if (the_curve_editor.curve_index >= 0) {
+	if (the_curve_editor.is_selection_valid()) {
 		int i = the_curve_editor.curve_index;
 		int color = colors[i % color_count];
 		auto& curve = editor.document.curve_list[i];
@@ -287,6 +288,9 @@ void Application::SetRedrawHandler(std::function<void()> handler)
 void Application::ActivateSplitTool()
 {
 	defer([this] {
+		if (!the_curve_editor.is_selection_valid()) {
+			return;
+		}
 		tool_active = true;
 		tool_instance = std::make_unique<tool_split>(
 			editor.document, the_curve_editor.curve_index);
@@ -300,6 +304,9 @@ void Application::ActivateSplitTool()
 void Application::ActivateEditTool()
 {
 	defer([this] {
+		if (!the_curve_editor.is_selection_valid()) {
+			return;
+		}
 		tool_active = true;
 		tool_instance = std::make_unique<tool_edit>(
 			editor.document, the_curve_editor.curve_index);
@@ -313,6 +320,9 @@ void Application::ActivateEditTool()
 void Application::ActivateChangeParamCount() 
 {
 	defer([this] {
+		if (!the_curve_editor.is_selection_valid()) {
+			return;
+		}
 		tool_active = true;
 		tool_instance = std::make_unique<tool_param_count>(
 			editor.document, the_curve_editor.curve_index);
@@ -364,5 +374,13 @@ void Application::SelectPreviousCurve()
 			the_curve_editor.curve_index 
 				= editor.document.curve_list.size() - 1;
 		}
+	});
+}
+
+void Application::AddNewCurve()
+{
+	defer([this] {
+		this->editor.history.commit(
+			std::make_unique<commands::add_curve>(editor.document));
 	});
 }

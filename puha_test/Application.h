@@ -73,4 +73,5 @@ public:
 	void ImportBinary(const std::string&);
 	void SelectNextCurve();
 	void SelectPreviousCurve();
+	void AddNewCurve();
 };

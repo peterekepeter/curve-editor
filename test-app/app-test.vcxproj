@@ -162,6 +162,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="custom_checks.cpp" />
+    <ClCompile Include="test_add_curve_command.cpp" />
     <ClCompile Include="test_binary_io.cpp" />
     <ClCompile Include="test_editor.cpp" />
     <ClCompile Include="test_edit_param_command.cpp" />

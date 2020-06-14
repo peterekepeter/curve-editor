@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="command_add_curve.h" />
     <ClInclude Include="io_binary.h" />
     <ClInclude Include="command_base.h" />
     <ClInclude Include="command_curve_base.h" />
@@ -34,6 +35,7 @@
     <ClInclude Include="transformation.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="command_add_curve.cpp" />
     <ClCompile Include="command_base.cpp" />
     <ClCompile Include="command_curve_base.cpp" />
     <ClCompile Include="command_edit_param.cpp" />
