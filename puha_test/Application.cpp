@@ -16,6 +16,7 @@ void Application::ThreadMethod()
 	// init code
 	editor.document.curve_list.emplace_back();
 	editor.document.curve_list.emplace_back();
+	editor.document.curve_list.emplace_back();
 	auto& the_curve = editor.document.curve_list[0];
 	init_curve(the_curve);
 	init_curve(editor.document.curve_list[1]);
@@ -158,21 +159,23 @@ void Application::DoRenderingWork()
 		render.render_separator_lines(selected_curve, 0x222222);
 	}
 
-	int colors[] = { 0x88ff4422, 0x882288ff };
+	int colors[] = { 0x00ff4422, 0x002288ff, 0x0066ff44 };
+	int color_count = sizeof(colors) / sizeof(int);
 	for (int i = 0; i < editor.document.curve_list.size(); i++) {
 		if (the_curve_editor.curve_index == i) {
 			continue;
 		}
-		int color = colors[i%2];
+		int color = colors[i % color_count];
+		color |= 0x44000000; // set alpha
 		auto& curve = editor.document.curve_list[i];
 		render.render_curve(curve, color);
 	}
 
 	if (the_curve_editor.curve_index >= 0) {
 		int i = the_curve_editor.curve_index;
-		int color = colors[i % 2];
+		int color = colors[i % color_count];
 		auto& curve = editor.document.curve_list[i];
-		color |= 0xaa000000; // increase alpha
+		color |= 0xaa000000; // set alpha
 		render.render_curve(curve, color);
 	}
 
@@ -342,12 +345,24 @@ void Application::ImportBinary(const std::string& in_binary)
 	});
 }
 
-void Application::SwitchSelectedCurve()
+void Application::SelectNextCurve()
 {
 	defer([this] {
 		the_curve_editor.curve_index++;
-		if (the_curve_editor.curve_index >= editor.document.curve_list.size()) {
+		if (the_curve_editor.curve_index 
+			>= editor.document.curve_list.size()) {
 			the_curve_editor.curve_index = 0;
+		}
+	});
+}
+
+void Application::SelectPreviousCurve() 
+{
+	defer([this] {
+		the_curve_editor.curve_index--;
+		if (the_curve_editor.curve_index < 0) {
+			the_curve_editor.curve_index 
+				= editor.document.curve_list.size() - 1;
 		}
 	});
 }

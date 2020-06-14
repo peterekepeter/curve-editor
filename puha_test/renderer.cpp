@@ -10,6 +10,7 @@ renderer::renderer(rendering_device& device)
 
 void renderer::render_separator_lines(const curve& curve, int color)
 {
+	if (curve.get_separator_count() == 0) return; //nothing to do
 	auto curve_start_x = screen_to_curve.apply_x(0);
 	auto first = curve.find_separator_index(curve_start_x);
 	auto count = curve.get_separator_count();

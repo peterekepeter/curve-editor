@@ -71,5 +71,6 @@ public:
 	std::string ExportCode();
 	std::string ExportBinary();
 	void ImportBinary(const std::string&);
-	void SwitchSelectedCurve();
+	void SelectNextCurve();
+	void SelectPreviousCurve();
 };
