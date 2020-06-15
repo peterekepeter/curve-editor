@@ -30,6 +30,7 @@ class Application
 	bool mouse_l = false;
 	bool mouse_l_prev = false;
 	std::unique_ptr<tool_base> tool_instance;
+	std::function<std::unique_ptr<tool_base>()> tool_factory;
 	std::unique_ptr<commands::base> preview_command;
 	curve_editor the_curve_editor;
 
@@ -49,6 +50,9 @@ class Application
 	void defer(std::function<void()>);
 	void execute_work_items();
 	void select_nearest_curve(int x, int y);
+	void active_tool_factory(std::function<std::unique_ptr<tool_base>()> factory);
+	std::unique_ptr<tool_base> new_tool_instance();
+	void update_all_tool_props(tool_base& tool);
 
 	// should be last
 	std::thread app_thread;

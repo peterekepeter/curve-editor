@@ -75,7 +75,7 @@ bool Application::DoWork()
 			if (cmd) {
 				editor.history.commit(std::move(cmd));
 			}
-			tool_instance.reset();
+			tool_instance = new_tool_instance();
 		}
 		else {
 			auto cmd = tool_instance->get_command();
@@ -150,6 +150,27 @@ void Application::select_nearest_curve(int x, int y)
 		}
 	}
 	the_curve_editor.curve_index = best_index;
+}
+
+void Application::active_tool_factory(std::function<std::unique_ptr<tool_base>()> factory)
+{
+	tool_factory = factory;
+	tool_instance = new_tool_instance();
+}
+
+std::unique_ptr<tool_base> Application::new_tool_instance()
+{
+	auto instance = tool_factory();
+	update_all_tool_props(*instance);
+	return instance;
+}
+
+void Application::update_all_tool_props(tool_base& tool)
+{
+	tool.update_mouse_curve(
+		mouse_curve_x, mouse_curve_y);
+	tool.update_mouse_screen(
+		mouse_x, mouse_y);
 }
 
 void Application::DoRenderingWork()
@@ -304,12 +325,12 @@ void Application::ActivateSplitTool()
 		if (!the_curve_editor.is_selection_valid()) {
 			return;
 		}
-		tool_instance = std::make_unique<tool_split>(
-			editor.document, the_curve_editor.curve_index);
-		tool_instance->update_mouse_curve(
-			mouse_curve_x, mouse_curve_y);
-		tool_instance->update_mouse_screen(
-			mouse_x, mouse_y);
+		active_tool_factory([this] {
+			return std::make_unique<tool_split>(
+				this->editor.document,
+				this->the_curve_editor.curve_index);
+			}
+		);
 	});
 }
 
@@ -319,12 +340,11 @@ void Application::ActivateEditTool()
 		if (!the_curve_editor.is_selection_valid()) {
 			return;
 		}
-		tool_instance = std::make_unique<tool_edit>(
-			editor.document, the_curve_editor.curve_index);
-		tool_instance->update_mouse_curve(
-			mouse_curve_x, mouse_curve_y);
-		tool_instance->update_mouse_screen(
-			mouse_x, mouse_y);
+		active_tool_factory([this] {
+			return std::make_unique<tool_edit>(
+				this->editor.document, 
+				this->the_curve_editor.curve_index);
+		});
 	});
 }
 
@@ -334,12 +354,12 @@ void Application::ActivateChangeParamCount()
 		if (!the_curve_editor.is_selection_valid()) {
 			return;
 		}
-		tool_instance = std::make_unique<tool_param_count>(
-			editor.document, the_curve_editor.curve_index);
-		tool_instance->update_mouse_curve(
-			mouse_curve_x, mouse_curve_y);
-		tool_instance->update_mouse_screen(
-			mouse_x, mouse_y);
+		active_tool_factory([this] {
+			return std::make_unique<tool_param_count>(
+				this->editor.document,
+				this->the_curve_editor.curve_index);
+			}
+		);
 	});
 }
 
