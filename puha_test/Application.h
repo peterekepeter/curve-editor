@@ -29,7 +29,6 @@ class Application
 
 	bool mouse_l = false;
 	bool mouse_l_prev = false;
-	bool tool_active = false;
 	std::unique_ptr<tool_base> tool_instance;
 	std::unique_ptr<commands::base> preview_command;
 	curve_editor the_curve_editor;

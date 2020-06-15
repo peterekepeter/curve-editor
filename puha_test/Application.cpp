@@ -16,11 +16,6 @@ void Application::ThreadMethod()
 {
 	// init code
 	editor.document.curve_list.emplace_back();
-	editor.document.curve_list.emplace_back();
-	editor.document.curve_list.emplace_back();
-	auto& the_curve = editor.document.curve_list[0];
-	init_curve(the_curve);
-	init_curve(editor.document.curve_list[1]);
 	curve_to_screen = transformation{ 50, -100, 160, 100 };
 	screen_to_curve = curve_to_screen.inverse();
 	
@@ -32,20 +27,6 @@ void Application::ThreadMethod()
 			signal.wait(lock);
 		}
 	}
-}
-
-static void init_curve(curve& c) {
-	c.split(-1.0f);
-	c.split(.0f);
-	c.split(1.0f);
-	auto& seg0 = c.find_segment_ref(-.5f);
-	seg0.params.resize(2);
-	seg0.params[0] = 0.0f;
-	seg0.params[1] = 1.0f;
-	auto& seg1 = c.find_segment_ref(.5f);
-	seg1.params.resize(2);
-	seg1.params[0] = 1.0f;
-	seg1.params[1] = 0.0f;
 }
 
 bool Application::DoWork()
@@ -75,7 +56,7 @@ bool Application::DoWork()
 		preview_command.reset();
 	}
 
-	if (tool_active && tool_instance) {
+	if (tool_instance) {
 		tool_instance->transform_change(curve_to_screen);
 		if (did_move || mouse_l_pressed || mouse_l_released) {
 			tool_instance->update_mouse_curve(
@@ -151,18 +132,18 @@ void Application::execute_work_items()
 
 void Application::select_nearest_curve(int x, int y)
 {
-	const float max_select_threshold_pixels = 16.0;
+	const float max_select_threshold_pixels = 32;
 	size_t best_index = -1;
 	auto best_distance = max_select_threshold_pixels;
 	for (size_t i = 0; i < editor.document.curve_list.size(); i++) {
-		if (i == the_curve_editor.curve_index) {
-
-		}
 		auto curve_x = screen_to_curve.apply_x(x);
 		auto curve_y = screen_to_curve.apply_y(y);
 		auto curve_y_value = editor.document.curve_list[i].eval(curve_x);
 		auto curve_distance_y = curve_y_value - curve_y;
 		auto screen_distance = abs(curve_to_screen.apply_scaling_y(curve_distance_y));
+		if (i == the_curve_editor.curve_index) {
+			screen_distance -= 1; // bias towards selected
+		}
 		if (screen_distance < best_distance) {
 			best_distance = screen_distance;
 			best_index = i;
@@ -212,7 +193,7 @@ void Application::DoRenderingWork()
 		render.render_curve(curve, color);
 	}
 
-	if (tool_active && tool_instance) {
+	if (tool_instance) {
 		const auto props =
 			tool_base::rprops{
 				curve_to_screen,
@@ -297,7 +278,7 @@ void Application::UpdateLeftButton(bool pressed)
 void Application::CancelCurrentEdit()
 {
 	defer([this] {
-		tool_active = false;
+		tool_instance.reset();
 	});
 }
 
@@ -323,7 +304,6 @@ void Application::ActivateSplitTool()
 		if (!the_curve_editor.is_selection_valid()) {
 			return;
 		}
-		tool_active = true;
 		tool_instance = std::make_unique<tool_split>(
 			editor.document, the_curve_editor.curve_index);
 		tool_instance->update_mouse_curve(
@@ -339,7 +319,6 @@ void Application::ActivateEditTool()
 		if (!the_curve_editor.is_selection_valid()) {
 			return;
 		}
-		tool_active = true;
 		tool_instance = std::make_unique<tool_edit>(
 			editor.document, the_curve_editor.curve_index);
 		tool_instance->update_mouse_curve(
@@ -355,7 +334,6 @@ void Application::ActivateChangeParamCount()
 		if (!the_curve_editor.is_selection_valid()) {
 			return;
 		}
-		tool_active = true;
 		tool_instance = std::make_unique<tool_param_count>(
 			editor.document, the_curve_editor.curve_index);
 		tool_instance->update_mouse_curve(
