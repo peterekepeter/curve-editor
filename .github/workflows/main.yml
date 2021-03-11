@@ -10,6 +10,7 @@ jobs:
   build:
     name: CI ${{matrix.platform}} ${{matrix.configuration}}
     strategy:
+      max-parallel: 1
       matrix:
         configuration: [Release, Debug]
         platform: [x64, x86]
@@ -30,5 +31,5 @@ jobs:
     
     - uses: actions/upload-artifact@v2
       with:
-        name: my-artifact
-        path: .build/${{matrix.platform}}${{matrix.configuration}}/editor-app.exe
+        name: curve-hacker.exe ${{matrix.platform}} ${{matrix.configuration}}
+        path: .build/${{matrix.platform}}${{matrix.configuration}}/curve-hacker.exe
