@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: CI ${{matrix.platform}} ${{matrix.configuration}}
+    strategy:
+      matrix:
+        configuration: [Release, Debug]
+        platform: [x64, x86]
+        
+    runs-on: windows-2019
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE"
+        devenv curve-hacker.sln /build "${{matrix.configuration}}|${{matrix.platform}}"
+    - name: Test
+      run: |
+        $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\Extensions\TestPlatform"
+        vstest.console .build/${{matrix.platform}}${{matrix.configuration}}/test-*.dll 
+    
+    - uses: actions/upload-artifact@v2
+      with:
+        name: curve-hacker.exe ${{matrix.platform}} ${{matrix.configuration}}
+        path: .build/${{matrix.platform}}${{matrix.configuration}}/curve-hacker.exe
