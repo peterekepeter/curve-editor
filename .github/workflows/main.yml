@@ -5,13 +5,16 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-  strategy:
-    matrix:
-      configuration: [Debug, Release]
-      platform: [x86, x64]
+
 jobs:
   build:
+
     runs-on: windows-2019
+
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+        platform: [x86, x64]
 
     steps:
     - uses: actions/checkout@v2
