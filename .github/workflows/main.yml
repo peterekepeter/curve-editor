@@ -5,7 +5,10 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
+  strategy:
+    matrix:
+      configuration: [Debug, Release]
+      platform: [x86, x64]
 jobs:
   build:
     runs-on: windows-2019
@@ -16,9 +19,8 @@ jobs:
     - name: Build
       run: |
         $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE"
-        devenv curve-hacker.sln /build
+        devenv curve-hacker.sln /build "${{configuration}}|${{platform}}"
     - name: Test
       run: |
         $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\Extensions\TestPlatform"
-        vstest.console x64/Debug/test-unit.dll 
-        vstest.console x64/Debug/test-app.dll
+        vstest.console .build/${{platform}}${{configuration}}/test-*.dll 
