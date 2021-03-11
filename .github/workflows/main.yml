@@ -11,7 +11,8 @@ jobs:
 
     strategy:
       matrix:
-        node_version: ['8', '10', '12']
+        configuration: [Release, Debug]
+        platform: [x64, x86]
         
     runs-on: windows-2019
 
@@ -21,8 +22,8 @@ jobs:
     - name: Build
       run: |
         $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE"
-        devenv curve-hacker.sln /build "${{configuration}}|${{platform}}"
+        devenv curve-hacker.sln /build "${{matrix.configuration}}|${{matrix.platform}}"
     - name: Test
       run: |
         $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\Extensions\TestPlatform"
-        vstest.console .build/${{platform}}${{configuration}}/test-*.dll 
+        vstest.console .build/${{matrix.platform}}${{matrix.configuration}}/test-*.dll 
