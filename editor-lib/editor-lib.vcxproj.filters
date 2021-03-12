@@ -25,12 +25,6 @@
     <Filter Include="Source Files\Utilities">
       <UniqueIdentifier>{c99d6ac7-4b73-4d17-a471-a5f1cc160e0a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\IO">
-      <UniqueIdentifier>{ec91a9a4-05bd-4dd5-af4a-5b1135f36b80}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\IO">
-      <UniqueIdentifier>{61f23f61-c5c4-402e-9bd8-2ad36fd73dab}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="command_split.h">
@@ -41,9 +35,6 @@
     </ClInclude>
     <ClInclude Include="command_curve_base.h">
       <Filter>Header Files\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="document_model.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="editor_math.h">
       <Filter>Header Files\Utilities</Filter>
@@ -68,9 +59,6 @@
     </ClInclude>
     <ClInclude Include="command_change_segment.h">
       <Filter>Header Files\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="io_binary.h">
-      <Filter>Header Files\IO</Filter>
     </ClInclude>
     <ClInclude Include="command_add_curve.h">
       <Filter>Header Files\Commands</Filter>
@@ -100,9 +88,6 @@
     </ClCompile>
     <ClCompile Include="command_change_segment.cpp">
       <Filter>Source Files\Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="io_binary.cpp">
-      <Filter>Source Files\IO</Filter>
     </ClCompile>
     <ClCompile Include="command_add_curve.cpp">
       <Filter>Source Files\Commands</Filter>

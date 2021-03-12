@@ -1,7 +1,9 @@
 #pragma 
 #include <memory>
+
+#include "../curve-lib/document_model.h"
+
 #include "./command_base.h"
-#include "./document_model.h"
 #include "./editor_history.h"
 
 class editor

@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "../curviness/curve.h"
+#include "../curve-lib/curve.h"
 #include "../editor-lib/transformation.h"
 #include "edit_control.h"
 

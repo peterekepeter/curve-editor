@@ -1,6 +1,6 @@
 #pragma once
 #include "rendering_device.h"
-#include "../curviness/curve.h"
+#include "../curve-lib/curve.h"
 #include "../editor-lib/transformation.h"
 
 class renderer

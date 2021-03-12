@@ -1,7 +1,7 @@
 #pragma once
 #include "../editor-lib/command_base.h"
 #include "../editor-lib/transformation.h"
-#include "../puha-render/puha-render.h"
+#include "../render-lib/puha-render.h"
 #include "./renderer.h"
 
 

@@ -25,7 +25,7 @@
     <RootNamespace>unittest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectSubType>NativeUnitTestProject</ProjectSubType>
-    <ProjectName>test-unit</ProjectName>
+    <ProjectName>test-curve-lib</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -171,7 +171,7 @@
     <ClCompile Include="algorithms_test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\curviness\curviness.vcxproj">
+    <ProjectReference Include="..\curve-lib\curve-lib.vcxproj">
       <Project>{e645429e-0b78-4684-941f-b2121333e84d}</Project>
     </ProjectReference>
   </ItemGroup>

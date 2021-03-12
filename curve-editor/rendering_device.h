@@ -1,5 +1,5 @@
 #pragma once
-#include "../puha-render/puha-render.h"
+#include "../render-lib/puha-render.h"
 
 
 class rendering_device

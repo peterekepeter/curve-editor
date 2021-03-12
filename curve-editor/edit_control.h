@@ -1,5 +1,5 @@
 #pragma once
-#include "../puha-render/puha-render.h"
+#include "../render-lib/puha-render.h"
 #include "../editor-lib/transformation.h"
 #include "./tool_base.h"
 #include "./renderer.h"

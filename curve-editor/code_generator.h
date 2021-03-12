@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
-#include "../curviness/curve.h"
-#include "../editor-lib/document_model.h"
+#include "../curve-lib/curve.h"
+#include "../curve-lib/document_model.h"
 
 namespace code_generator
 {

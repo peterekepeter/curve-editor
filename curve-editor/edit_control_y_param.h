@@ -1,6 +1,6 @@
 #pragma once
+#include "../curve-lib/segment_with_separators.h"
 #include "./edit_control.h";
-#include "../curviness/segment_with_separators.h"
 
 class edit_control_y_param : public edit_control
 {

@@ -2,7 +2,7 @@
 #include <memory>
 #include <vector>
 #include "./command_base.h"
-#include "./document_model.h"
+#include "../curve-lib/document_model.h"
 
 class editor_history
 {

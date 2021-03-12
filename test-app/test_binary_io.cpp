@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "../editor-lib/io_binary.h"
+#include "../curve-lib/io_binary.h"
 
 namespace test_io
 {

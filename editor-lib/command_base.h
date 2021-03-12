@@ -1,5 +1,5 @@
 #pragma once
-#include "./document_model.h"
+#include "../curve-lib/document_model.h"
 
 namespace commands
 {

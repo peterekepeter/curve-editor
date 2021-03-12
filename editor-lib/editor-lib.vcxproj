@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="command_add_curve.h" />
-    <ClInclude Include="io_binary.h" />
     <ClInclude Include="command_base.h" />
     <ClInclude Include="command_curve_base.h" />
     <ClInclude Include="command_edit_param.h" />
@@ -28,7 +27,6 @@
     <ClInclude Include="command_change_segment.h" />
     <ClInclude Include="command_split.h" />
     <ClInclude Include="editor_history.h" />
-    <ClInclude Include="document_model.h" />
     <ClInclude Include="editor.h" />
     <ClInclude Include="editor_math.h" />
     <ClInclude Include="point.h" />
@@ -43,11 +41,10 @@
     <ClCompile Include="command_change_segment.cpp" />
     <ClCompile Include="command_split.cpp" />
     <ClCompile Include="editor_history.cpp" />
-    <ClCompile Include="io_binary.cpp" />
     <ClCompile Include="transformation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\curviness\curviness.vcxproj">
+    <ProjectReference Include="..\curve-lib\curve-lib.vcxproj">
       <Project>{e645429e-0b78-4684-941f-b2121333e84d}</Project>
     </ProjectReference>
   </ItemGroup>

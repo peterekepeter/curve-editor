@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "../curviness/curve.h"
+#include "curve.h"
 
 class document_model
 {

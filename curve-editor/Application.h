@@ -3,15 +3,15 @@
 #include <functional>
 #include <mutex>
 #include <sstream>
-#include "../curviness/curviness.h"
+#include "../curve-lib/curviness.h"
 #include "./curve_editor.h"
 #include "../editor-lib/transformation.h"
 #include "../editor-lib/editor.h"
-#include "../puha-render/puha-render.h"
+#include "../render-lib/puha-render.h"
 #include "./tool_base.h"
 #include "./rendering_device.h"
 #include "./renderer.h"
-#include "../editor-lib/io_binary.h"
+#include "../curve-lib/io_binary.h"
 
 class Application
 {

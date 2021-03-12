@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Model">
+      <UniqueIdentifier>{14183360-a647-456a-a90c-f3b9e05b83e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IO">
+      <UniqueIdentifier>{61129efe-43b4-46fc-a7c1-983b068ee531}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="segment_with_separators.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="segment.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="curviness.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="curve.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="algorithms.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="io_binary.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="document_model.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="algorithms.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="curve.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="segment.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="io_binary.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
