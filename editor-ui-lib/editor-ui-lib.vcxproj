@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -18,43 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="code_generator.h" />
-    <ClInclude Include="command_add_curve.h" />
-    <ClInclude Include="command_base.h" />
-    <ClInclude Include="command_curve_base.h" />
-    <ClInclude Include="command_edit_param.h" />
-    <ClInclude Include="command_edit_separator.h" />
-    <ClInclude Include="command_change_segment.h" />
-    <ClInclude Include="command_split.h" />
-    <ClInclude Include="editor_history.h" />
-    <ClInclude Include="editor.h" />
-    <ClInclude Include="editor_math.h" />
-    <ClInclude Include="point.h" />
-    <ClInclude Include="transformation.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="code_generator.cpp" />
-    <ClCompile Include="command_add_curve.cpp" />
-    <ClCompile Include="command_base.cpp" />
-    <ClCompile Include="command_curve_base.cpp" />
-    <ClCompile Include="command_edit_param.cpp" />
-    <ClCompile Include="command_edit_separator.cpp" />
-    <ClCompile Include="command_change_segment.cpp" />
-    <ClCompile Include="command_split.cpp" />
-    <ClCompile Include="editor_history.cpp" />
-    <ClCompile Include="transformation.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\curve-lib\curve-lib.vcxproj">
-      <Project>{e645429e-0b78-4684-941f-b2121333e84d}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{015DE21E-3644-452C-A8D6-278F770645F6}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>editorlib</RootNamespace>
+    <ProjectGuid>{4f3e663c-1c5f-4fde-92ff-c206a9cffd16}</ProjectGuid>
+    <RootNamespace>editoruilib</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -104,82 +72,123 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir).build\$(PlatformShortName)$(Configuration)\</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir).build\$(PlatformShortName)$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir).build\$(PlatformShortName)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir).build\$(PlatformShortName)$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>
+      </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>
+      </SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>
+      </SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="curve_editor.h" />
+    <ClInclude Include="edit_control.h" />
+    <ClInclude Include="edit_control_separator.h" />
+    <ClInclude Include="edit_control_y_param.h" />
+    <ClInclude Include="message.h" />
+    <ClInclude Include="message_type.h" />
+    <ClInclude Include="renderer.h" />
+    <ClInclude Include="rendering_device.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="theme.h" />
+    <ClInclude Include="tool_base.h" />
+    <ClInclude Include="tool_edit.h" />
+    <ClInclude Include="tool_param_count.h" />
+    <ClInclude Include="tool_split.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="curve_editor.cpp" />
+    <ClCompile Include="edit_control.cpp" />
+    <ClCompile Include="edit_control_separator.cpp" />
+    <ClCompile Include="edit_control_y_param.cpp" />
+    <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="rendering_device.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="theme.cpp" />
+    <ClCompile Include="tool_base.cpp" />
+    <ClCompile Include="tool_edit.cpp" />
+    <ClCompile Include="tool_param_count.cpp" />
+    <ClCompile Include="tool_split.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\curve-lib\curve-lib.vcxproj">
+      <Project>{e645429e-0b78-4684-941f-b2121333e84d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\editor-lib\editor-lib.vcxproj">
+      <Project>{015de21e-3644-452c-a8d6-278f770645f6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\render-lib\render-lib.vcxproj">
+      <Project>{37762878-29d8-4399-9cef-442638444e62}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Tools">
+      <UniqueIdentifier>{ecb07ca5-6b4d-4ec9-947b-9a185d790d48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\Controls">
+      <UniqueIdentifier>{6992b4b9-0ab9-4028-8b8e-4b86e4d3bc01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{e4cd5594-c7b9-4a5b-a5ba-0ab9c3be5446}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="tool_split.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="tool_param_count.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="tool_base.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="tool_edit.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="curve_editor.h">
+      <Filter>Tools\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="edit_control.h">
+      <Filter>Tools\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="edit_control_separator.h">
+      <Filter>Tools\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="edit_control_y_param.h">
+      <Filter>Tools\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="theme.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="rendering_device.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="message_type.h" />
+    <ClInclude Include="message.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="tool_base.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="tool_edit.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="tool_param_count.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="tool_split.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="edit_control.cpp">
+      <Filter>Tools\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="edit_control_separator.cpp">
+      <Filter>Tools\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="edit_control_y_param.cpp">
+      <Filter>Tools\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="curve_editor.cpp">
+      <Filter>Tools\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="theme.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="rendering_device.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+  </ItemGroup>
+</Project>

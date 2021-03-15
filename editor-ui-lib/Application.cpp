@@ -8,24 +8,39 @@
 #include "./tool_split.h"
 #include "./tool_edit.h"
 #include "./tool_param_count.h"
-#include "./code_generator.h"
+#include "../editor-lib/code_generator.h"
 
 static void init_curve(curve& c);
 
 void Application::ThreadMethod()
 {
-	// init code
-	editor.document.curve_list.emplace_back();
-	curve_to_screen = transformation{ 50, -100, 160, 100 };
-	screen_to_curve = curve_to_screen.inverse();
-	
-	// main
-	std::unique_lock<std::mutex> lock(thread_mutex);
-	while (is_running) {
-		auto did_work = DoWork();
-		if (!did_work) {
-			signal.wait(lock);
+	try
+	{
+		// init code
+		editor.document.curve_list.emplace_back();
+		curve_to_screen = transformation{ 50, -100, 160, 100 };
+		screen_to_curve = curve_to_screen.inverse();
+
+		// main
+		std::unique_lock<std::mutex> lock(thread_mutex);
+		while (is_running) {
+			auto did_work = DoWork();
+			if (!did_work) {
+				signal.wait(lock);
+			}
 		}
+	}
+	catch (std::exception exception)
+	{
+		is_running = false;
+		is_error = true;
+		error_message = exception.what();
+	}
+	catch (const char* message) 
+	{
+		is_running = false;
+		is_error = true;
+		error_message = message;
 	}
 }
 

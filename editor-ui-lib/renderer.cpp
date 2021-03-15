@@ -77,7 +77,9 @@ void renderer::render_param_dot(const curve& curve, size_t segment_index, size_t
 			curve_x += target.right;
 			weight++;
 		}
-		curve_x /= weight;
+		if (weight > 0) {
+			curve_x /= weight;
+		}
 	}
 	else {
 		curve_x = target.left + param_index * 

@@ -146,6 +146,7 @@ segment_with_separators<curve::time_t> curve::get_segment_by_index(index_t segme
 	};
 }
 
+
 const segment& curve::get_segment_ref_by_index(curve::index_t index) const
 {
 	return this->segments[index];

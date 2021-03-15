@@ -25,6 +25,9 @@
     <Filter Include="Source Files\Utilities">
       <UniqueIdentifier>{c99d6ac7-4b73-4d17-a471-a5f1cc160e0a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Export">
+      <UniqueIdentifier>{5a83876a-cf62-4edd-8bb7-0f44c39bab70}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="command_split.h">
@@ -63,6 +66,9 @@
     <ClInclude Include="command_add_curve.h">
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
+    <ClInclude Include="code_generator.h">
+      <Filter>Export</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="command_split.cpp">
@@ -91,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="command_add_curve.cpp">
       <Filter>Source Files\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="code_generator.cpp">
+      <Filter>Export</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

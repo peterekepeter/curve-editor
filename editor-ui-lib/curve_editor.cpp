@@ -10,8 +10,14 @@ static int get_nearest_param_index(
 );
 
 curve_editor::nearest_result
-curve_editor::get_nearest_edit_control(float x, float y, const transformation& curve_to_screen)
+curve_editor::get_nearest_edit_control(
+	float x, 
+	float y, 
+	const transformation& curve_to_screen)
 {
+	if (!is_selection_valid()) {
+		return nearest_result{}; // empty
+	}
 	auto& curve = document.curve_list[curve_index];
 	auto nearest_segment = curve.find_segment(x);
 	auto param_index = get_nearest_param_index(nearest_segment, x);
@@ -79,7 +85,7 @@ curve_editor::get_nearest_edit_control(float x, float y, const transformation& c
 		};
 	}
 
-	throw "should never get here";
+	return nearest_result{}; // empty
 }
 
 void curve_editor::remove_zero_length_segments()

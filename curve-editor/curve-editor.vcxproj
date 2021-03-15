@@ -89,7 +89,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
@@ -103,7 +103,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
@@ -117,7 +117,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -136,7 +136,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -154,43 +154,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Application.h" />
-    <ClInclude Include="code_generator.h" />
-    <ClInclude Include="curve_editor.h" />
-    <ClInclude Include="edit_control.h" />
-    <ClInclude Include="edit_control_separator.h" />
-    <ClInclude Include="edit_control_y_param.h" />
-    <ClInclude Include="rendering_device.h" />
-    <ClInclude Include="renderer.h" />
-    <ClInclude Include="theme.h" />
-    <ClInclude Include="tool_edit.h" />
-    <ClInclude Include="tool_param_count.h" />
-    <ClInclude Include="tool_split.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="tool_base.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Application.cpp" />
-    <ClCompile Include="code_generator.cpp" />
-    <ClCompile Include="curve_editor.cpp" />
-    <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="rendering_device.cpp" />
-    <ClCompile Include="edit_control.cpp" />
-    <ClCompile Include="edit_control_separator.cpp" />
-    <ClCompile Include="edit_control_y_param.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="theme.cpp" />
-    <ClCompile Include="tool_edit.cpp" />
-    <ClCompile Include="tool_param_count.cpp" />
-    <ClCompile Include="tool_split.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="tool_base.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\curve-lib\curve-lib.vcxproj">
@@ -199,9 +164,16 @@
     <ProjectReference Include="..\editor-lib\editor-lib.vcxproj">
       <Project>{015de21e-3644-452c-a8d6-278f770645f6}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\editor-ui-lib\editor-ui-lib.vcxproj">
+      <Project>{4f3e663c-1c5f-4fde-92ff-c206a9cffd16}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\render-lib\render-lib.vcxproj">
       <Project>{37762878-29d8-4399-9cef-442638444e62}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

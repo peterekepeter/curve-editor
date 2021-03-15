@@ -20,8 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\main.yml = .github\workflows\main.yml
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curve-playback-lib", "curve-playback-lib\curve-playback-lib.vcxproj", "{1ECF448C-C17E-4B1C-A025-4F54F9F9C087}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curve-editor", "curve-editor\curve-editor.vcxproj", "{932C030D-373A-4DAC-9443-D95B2549AFF5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curve-lib", "curve-lib\curve-lib.vcxproj", "{E645429E-0B78-4684-941F-B2121333E84D}"
@@ -29,6 +27,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "render-lib", "render-lib\render-lib.vcxproj", "{37762878-29D8-4399-9CEF-442638444E62}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3E1DA8AA-ADA5-4FB9-B255-4C75634F12D2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "editor-ui-lib", "editor-ui-lib\editor-ui-lib.vcxproj", "{4F3E663C-1C5F-4FDE-92FF-C206A9CFFD16}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test-editor-ui-lib", "test-editor-ui-lib\test-editor-ui-lib.vcxproj", "{13B10F71-802A-472F-B8DE-B466F3CF1BC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,14 +64,6 @@ Global
 		{015DE21E-3644-452C-A8D6-278F770645F6}.Release|x64.Build.0 = Release|x64
 		{015DE21E-3644-452C-A8D6-278F770645F6}.Release|x86.ActiveCfg = Release|Win32
 		{015DE21E-3644-452C-A8D6-278F770645F6}.Release|x86.Build.0 = Release|Win32
-		{1ECF448C-C17E-4B1C-A025-4F54F9F9C087}.Debug|x64.ActiveCfg = Debug|x64
-		{1ECF448C-C17E-4B1C-A025-4F54F9F9C087}.Debug|x64.Build.0 = Debug|x64
-		{1ECF448C-C17E-4B1C-A025-4F54F9F9C087}.Debug|x86.ActiveCfg = Debug|Win32
-		{1ECF448C-C17E-4B1C-A025-4F54F9F9C087}.Debug|x86.Build.0 = Debug|Win32
-		{1ECF448C-C17E-4B1C-A025-4F54F9F9C087}.Release|x64.ActiveCfg = Release|x64
-		{1ECF448C-C17E-4B1C-A025-4F54F9F9C087}.Release|x64.Build.0 = Release|x64
-		{1ECF448C-C17E-4B1C-A025-4F54F9F9C087}.Release|x86.ActiveCfg = Release|Win32
-		{1ECF448C-C17E-4B1C-A025-4F54F9F9C087}.Release|x86.Build.0 = Release|Win32
 		{932C030D-373A-4DAC-9443-D95B2549AFF5}.Debug|x64.ActiveCfg = Debug|x64
 		{932C030D-373A-4DAC-9443-D95B2549AFF5}.Debug|x64.Build.0 = Debug|x64
 		{932C030D-373A-4DAC-9443-D95B2549AFF5}.Debug|x86.ActiveCfg = Debug|Win32
@@ -94,6 +88,22 @@ Global
 		{37762878-29D8-4399-9CEF-442638444E62}.Release|x64.Build.0 = Release|x64
 		{37762878-29D8-4399-9CEF-442638444E62}.Release|x86.ActiveCfg = Release|Win32
 		{37762878-29D8-4399-9CEF-442638444E62}.Release|x86.Build.0 = Release|Win32
+		{4F3E663C-1C5F-4FDE-92FF-C206A9CFFD16}.Debug|x64.ActiveCfg = Debug|x64
+		{4F3E663C-1C5F-4FDE-92FF-C206A9CFFD16}.Debug|x64.Build.0 = Debug|x64
+		{4F3E663C-1C5F-4FDE-92FF-C206A9CFFD16}.Debug|x86.ActiveCfg = Debug|Win32
+		{4F3E663C-1C5F-4FDE-92FF-C206A9CFFD16}.Debug|x86.Build.0 = Debug|Win32
+		{4F3E663C-1C5F-4FDE-92FF-C206A9CFFD16}.Release|x64.ActiveCfg = Release|x64
+		{4F3E663C-1C5F-4FDE-92FF-C206A9CFFD16}.Release|x64.Build.0 = Release|x64
+		{4F3E663C-1C5F-4FDE-92FF-C206A9CFFD16}.Release|x86.ActiveCfg = Release|Win32
+		{4F3E663C-1C5F-4FDE-92FF-C206A9CFFD16}.Release|x86.Build.0 = Release|Win32
+		{13B10F71-802A-472F-B8DE-B466F3CF1BC9}.Debug|x64.ActiveCfg = Debug|x64
+		{13B10F71-802A-472F-B8DE-B466F3CF1BC9}.Debug|x64.Build.0 = Debug|x64
+		{13B10F71-802A-472F-B8DE-B466F3CF1BC9}.Debug|x86.ActiveCfg = Debug|Win32
+		{13B10F71-802A-472F-B8DE-B466F3CF1BC9}.Debug|x86.Build.0 = Debug|Win32
+		{13B10F71-802A-472F-B8DE-B466F3CF1BC9}.Release|x64.ActiveCfg = Release|x64
+		{13B10F71-802A-472F-B8DE-B466F3CF1BC9}.Release|x64.Build.0 = Release|x64
+		{13B10F71-802A-472F-B8DE-B466F3CF1BC9}.Release|x86.ActiveCfg = Release|Win32
+		{13B10F71-802A-472F-B8DE-B466F3CF1BC9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +112,7 @@ Global
 		{56C93A9D-71F6-4173-8940-46CD03DA61E7} = {3E1DA8AA-ADA5-4FB9-B255-4C75634F12D2}
 		{068EDB6A-7E44-4786-8B73-A13F1103E938} = {3E1DA8AA-ADA5-4FB9-B255-4C75634F12D2}
 		{DAB9D371-6CCD-41DA-BDFE-C2ECC698FFD4} = {D9D67DB1-7394-4BE8-8F39-B5638AD8EC90}
+		{13B10F71-802A-472F-B8DE-B466F3CF1BC9} = {3E1DA8AA-ADA5-4FB9-B255-4C75634F12D2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {29BCFD17-CD4A-40BC-B739-038238A275D3}

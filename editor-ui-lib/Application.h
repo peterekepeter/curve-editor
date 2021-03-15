@@ -21,6 +21,8 @@ class Application
 
 	std::function<void()> onredraw;
 	bool is_running;
+	bool is_error;
+	std::string error_message;
 	std::mutex thread_mutex;
 	std::condition_variable signal;
 	void ThreadMethod();

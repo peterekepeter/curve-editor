@@ -49,7 +49,7 @@ bool tool_edit::is_complete()
 
 tool_base::command_ptr tool_edit::get_command()
 {
-	if (mouse_l_state || complete)
+	if (target.control && (mouse_l_state || complete))
 	{
 		float snap_threshold = abs(8.0f / curve_to_screen.scale_y);
 		return target.control->get_command(

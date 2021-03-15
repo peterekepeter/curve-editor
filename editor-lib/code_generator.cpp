@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "code_generator.h"
 #include <sstream>
 
@@ -132,7 +131,7 @@ std::vector<double> get_polynomial_form(
 }
 
 static double get_polynomial_coef(int j, const std::vector<float>& params) {
-	int n = params.size();
+	int n = (int)params.size();
 	double product = 1.0;
 	for (int m = 0; m < j; m++) {
 		product *= (n - m);
