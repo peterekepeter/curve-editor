@@ -4,22 +4,17 @@ static int magic_value = 0xfeedfeed; // used to validate buffer writes, if these
 static int font_char_width = 6; // the width of a single char in the font data
 static int canvas_width = 320;
 static int canvas_height = 200;
+static int padding_rows_before = 8;
+static int padding_rows_after = 8;
 
 Gfx320x200::Gfx320x200()
 {
 	// we allocate a sligly larger buffer so one off errors can be detected
 	// and won't crash the application
-	real_buffer = new int[canvas_width * (canvas_height + 2)];
-	buffer = real_buffer + canvas_width;
-
-	// we fill first row and last rows of buffer
-	{
-		int* first_row = real_buffer;
-		int* last_row = buffer + canvas_width * canvas_height;
-		for (int i = 0; i < 320; i++) {
-			first_row[i] = last_row[i] = magic_value;
-		}
-	}
+	real_buffer = new int[canvas_width * (canvas_height + padding_rows_before + padding_rows_after)];
+	buffer = real_buffer + canvas_width * padding_rows_before;
+	
+	ResetBoundsValidity();
 
 	color = 0x0;
 	RectangleFilled(0, 0, 319, 199);
@@ -28,14 +23,24 @@ Gfx320x200::Gfx320x200()
 
 bool Gfx320x200::AreBoundsValid() {
 	bool is_valid = true;
-	int* first_row = real_buffer;
-	int* last_row = buffer + canvas_width * canvas_height;
+	int* validation_row_before = buffer - canvas_width;
+	int* validation_row_after = buffer + canvas_width * canvas_height;
 	for (int i = 0; i < canvas_width; i++) {
-		if (first_row[i] != 0xfeedfeed || last_row[i] != 0xfeedfeed) {
+		if (validation_row_before[i] != magic_value || validation_row_after[i] != magic_value) {
 			is_valid = false;
 		}
 	}
 	return is_valid;
+}
+
+void Gfx320x200::ResetBoundsValidity() {
+
+	// we fill first row and last rows of buffer
+	int* validation_row_before = buffer - canvas_width;
+	int* validation_row_after = buffer + canvas_width * canvas_height;
+	for (int i = 0; i < 320; i++) {
+		validation_row_before[i] = validation_row_after[i] = magic_value;
+	}
 }
 
 ClippedGfx<Gfx320x200> Gfx320x200::CreateViewport()

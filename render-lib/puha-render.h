@@ -57,6 +57,7 @@ public:
 
 	// memory
 	bool AreBoundsValid(); // checks memory before and after buffer, returns false if it was accidentally written
+	void ResetBoundsValidity(); // resets boundary error detection
 	unsigned char* GetBytePtr(int x, int y) { return (unsigned char*)(&buffer[x + (y << 6) + (y << 8)]); }
 	int* GetBuffer() { return buffer; }
 

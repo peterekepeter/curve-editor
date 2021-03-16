@@ -20,9 +20,8 @@ class Application
 	renderer render;
 
 	std::function<void()> onredraw;
+	std::function<void(const char*)> on_error;
 	bool is_running;
-	bool is_error;
-	std::string error_message;
 	std::mutex thread_mutex;
 	std::condition_variable signal;
 	void ThreadMethod();
@@ -55,6 +54,8 @@ class Application
 	void active_tool_factory(std::function<std::unique_ptr<tool_base>()> factory);
 	std::unique_ptr<tool_base> new_tool_instance();
 	void update_all_tool_props(tool_base& tool);
+	void attempt_error_recovery();
+
 
 	// should be last
 	std::thread app_thread;
@@ -71,6 +72,7 @@ public:
 	void CancelCurrentEdit();
 	void UpdateMousePos(int x, int y);
 	void SetRedrawHandler(std::function<void()> handler);
+	void SetErrorReporter(std::function<void(const char*)> handler);
 	void ZoomIn();
 	void ZoomOut();
 	void Undo();

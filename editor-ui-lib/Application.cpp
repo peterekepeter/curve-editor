@@ -14,33 +14,37 @@ static void init_curve(curve& c);
 
 void Application::ThreadMethod()
 {
-	try
+	// init code
+	editor.document.curve_list.emplace_back();
+	curve_to_screen = transformation{ 50, -100, 160, 100 };
+	screen_to_curve = curve_to_screen.inverse();
+	
+	while (is_running) 
 	{
-		// init code
-		editor.document.curve_list.emplace_back();
-		curve_to_screen = transformation{ 50, -100, 160, 100 };
-		screen_to_curve = curve_to_screen.inverse();
-
-		// main
-		std::unique_lock<std::mutex> lock(thread_mutex);
-		while (is_running) {
-			auto did_work = DoWork();
-			if (!did_work) {
-				signal.wait(lock);
+		// infinite retry loop
+		try
+		{
+			// main
+			std::unique_lock<std::mutex> lock(thread_mutex);
+			while (is_running) {
+				auto did_work = DoWork();
+				if (!did_work) {
+					signal.wait(lock);
+				}
 			}
 		}
-	}
-	catch (std::exception exception)
-	{
-		is_running = false;
-		is_error = true;
-		error_message = exception.what();
-	}
-	catch (const char* message) 
-	{
-		is_running = false;
-		is_error = true;
-		error_message = message;
+		catch (std::exception exception)
+		{
+			on_error(exception.what());
+			attempt_error_recovery();
+			//is_running = false;
+		}
+		catch (const char* message)
+		{
+			on_error(message);
+			attempt_error_recovery();
+			//is_running = false;
+		}
 	}
 }
 
@@ -188,6 +192,14 @@ void Application::update_all_tool_props(tool_base& tool)
 		mouse_x, mouse_y);
 }
 
+void Application::attempt_error_recovery()
+{
+	mouse_l = false;
+	mouse_l_prev = false;
+	tool_instance.reset();
+	gfx.ResetBoundsValidity();
+}
+
 void Application::DoRenderingWork()
 {
 	const int screen_width = gfx.Width;
@@ -240,7 +252,7 @@ void Application::DoRenderingWork()
 	}
 
 	if (!gfx.AreBoundsValid()) {
-		throw "oh crap!";
+		throw "graphics corruption detected!";
 	}
 
 	onredraw();
@@ -332,6 +344,11 @@ void Application::SetRedrawHandler(std::function<void()> handler)
 	onredraw = handler;
 	onredraw();
 	signal.notify_all();
+}
+
+void Application::SetErrorReporter(std::function<void(const char*)> handler)
+{
+	on_error = handler;
 }
 
 void Application::ActivateSplitTool()
