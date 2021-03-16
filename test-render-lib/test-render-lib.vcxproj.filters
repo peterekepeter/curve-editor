@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="test_curve_editor.cpp" />
+    <ClCompile Include="test_gfx_bounds.cpp" />
     <ClCompile Include="pch.cpp">
       <Filter>Precompiled Headers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Precompiled Headers">
-      <UniqueIdentifier>{6ce2cf59-9cbc-43f5-a478-30550f67a4ab}</UniqueIdentifier>
+      <UniqueIdentifier>{cc0ecf92-ae64-4892-89fd-7efa577caafd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -30,9 +30,6 @@
     <ClInclude Include="edit_control.h">
       <Filter>Tools\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="edit_control_separator.h">
-      <Filter>Tools\Controls</Filter>
-    </ClInclude>
     <ClInclude Include="edit_control_y_param.h">
       <Filter>Tools\Controls</Filter>
     </ClInclude>
@@ -49,6 +46,9 @@
     <ClInclude Include="message_type.h" />
     <ClInclude Include="message.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="edit_control_separator.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tool_base.cpp">

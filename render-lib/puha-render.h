@@ -186,7 +186,7 @@ inline void ClippedGfx<Gfx>::RectFill(int x, int y, int w, int h, int color)
 		w -= dx;
 	}
 	if (y + h > y1) {
-		int dy = x + h - y1;
+		int dy = y + h - y1;
 		h -= dy;
 	}
 	if (w > 0 && h > 0) {
