@@ -11,7 +11,7 @@ jobs:
     name: CI ${{matrix.platform}} ${{matrix.configuration}}
     strategy:
       matrix:
-        configuration: [Release, Debug]
+        configuration: [MT, Debug]
         platform: [x64, x86]
         
     runs-on: windows-2019
@@ -31,4 +31,4 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: Curve Editor ${{matrix.platform}} ${{matrix.configuration}}
-        path: .build/${{matrix.platform}}${{matrix.configuration}}/curve-editor.exe
+        path: .build/out-${{matrix.platform}}-${{matrix.configuration}}/curve-editor.exe
