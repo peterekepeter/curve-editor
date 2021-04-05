@@ -26,7 +26,7 @@ jobs:
     - name: Test
       run: |
         $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\Extensions\TestPlatform"
-        vstest.console .build/${{matrix.platform}}${{matrix.configuration}}/test-*.dll 
+        vstest.console .build/out-${{matrix.platform}}-${{matrix.configuration}}/test-*.dll 
     
     - uses: actions/upload-artifact@v2
       with:
